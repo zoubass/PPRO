@@ -14,25 +14,34 @@
     <context:component-scan base-package="cz.eshop.controller"/>
     <mvc:annotation-driven/>
     <mvc:default-servlet-handler/>
+    
+    
+    <mvc:resources location="WEB-INF/css/" mapping="/css/**" />
+    <mvc:resources location="WEB-INF/js/" mapping="/js/**" />
+    <mvc:resources location="WEB-INF/vendor/" mapping="/vendor/**" />
 
-    <mvc:resources location="WEB-INF/img/" mapping="/img/**"/>
-    <mvc:resources location="WEB-INF/css/" mapping="/css/**"/>
-    <mvc:resources location="WEB-INF/fonts/" mapping="/fonts/**"/>
 
     <bean id="validator"
           class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-    <bean id="viewResolver"
-          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
-        <property name="cache" value="false"/>
+    <bean id="templateResolver"
+          class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+        <property name="prefix" value="/WEB-INF/templates/"/>
+        <property name="suffix" value=".html"/>
+        <property name="templateMode" value="HTML5"/>
+        <property name="cacheable" value="false" />
     </bean>
-
-    <bean id="filterMultipartResolver"
-          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-
-        <property name="maxUploadSize" value="-1"/>
+    <bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+        <property name="templateResolver" ref="templateResolver"/>
+        <property name="additionalDialects">
+            <set>
+                <bean class="org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect" />
+            </set>
+        </property>
+    </bean>
+    <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="templateEngine"/>
+        <property name="characterEncoding" value="UTF-8" />
     </bean>
 
 </beans>

@@ -2,17 +2,17 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-    <display-name>E-shop</display-name>
+    <display-name>Docházkový systém</display-name>
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath*:META-INF/spring/application-context-security.xml,
             classpath*:META-INF/spring/application-context.xml
         </param-value>
     </context-param>
-    <context-param>
-        <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
-        <param-value>/WEB-INF/security.taglib.xml</param-value>
-    </context-param>
+    <!--<context-param>-->
+        <!--<param-name>javax.faces.FACELETS_LIBRARIES</param-name>-->
+        <!--<param-value>/WEB-INF/security.taglib.xml</param-value>-->
+    <!--</context-param>-->
 
     <listener>
         <listener-class>
@@ -35,15 +35,15 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-    <filter>
-        <display-name>springMultipartFilter</display-name>
-        <filter-name>springMultipartFilter</filter-name>
-        <filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springMultipartFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    <!--<filter>-->
+        <!--<display-name>springMultipartFilter</display-name>-->
+        <!--<filter-name>springMultipartFilter</filter-name>-->
+        <!--<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>springMultipartFilter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
 
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
