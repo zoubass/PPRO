@@ -1,5 +1,6 @@
 package cz.eshop.controller;
 
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -21,6 +22,11 @@ public class WebController {
         return "index";
     }
 
+    @RequestMapping(value = {"/products"})
+    public String showProductPage(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        return "offer";
+    }
 
     @RequestMapping("/error")
     public String error(HttpServletRequest request, Model model) {
@@ -47,7 +53,7 @@ public class WebController {
     public String login(Model model, @RequestParam(value = "error", required = false) String error,
                         @RequestParam(value = "logout", required = false) String logout) {
 
-		if (error != null) {
+        if (error != null) {
             model.addAttribute("error", "Nesprávné uživatelské jméno nebo heslo!");
         }
 

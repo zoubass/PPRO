@@ -46,7 +46,7 @@
         <property name="scripts">
             <list>
                 <value>classpath:sql/Schema/createSchema.sql</value>
-                <value>classpath:sql/Data/insertData.sql</value>
+                <!--<value>classpath:sql/Data/insertData.sql</value>-->
             </list>
         </property>
     </bean>
@@ -59,9 +59,11 @@
             <list>
                 <value>cz.eshop.model.User</value>
                 <value>cz.eshop.model.Authorities</value>
-                <value>cz.eshop.model.Produkt</value>
-                <value>cz.eshop.model.Order</value>
-                <value>cz.eshop.model.Feedback</value>
+                <value>cz.eshop.model.Attendance</value>
+                <value>cz.eshop.model.Parent</value>
+                <value>cz.eshop.model.Reminder</value>
+                <value>cz.eshop.model.Ticket</value>
+                <value>cz.eshop.model.Training</value>
             </list>
         </property>
         <property name="hibernateProperties">
