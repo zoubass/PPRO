@@ -2,44 +2,42 @@ package cz.eshop.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
 @Table(name = "reminders")
 public class Reminder {
-    private User user;
+    @Id
+    @GeneratedValue
+    private long id;
+
     private int reminderCount;
     private Date startingDate;
 
-    @Id
-    @NotEmpty
+    //region getters
+
     @NotNull
-    @Column(name="user")
-    public User getUser() {
-        return user;
+    @Column(name="reminder_id", nullable = false)
+    public long getId() {
+        return id;
     }
 
-    @NotEmpty
+
     @Column(name = "reminderCount")
     public int getReminderCount() {
         return reminderCount;
     }
 
-    @NotEmpty
+
     @Column(name = "startingDate")
     public Date getStartingDate() {
         return startingDate;
     }
+    //endregion
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
+    //region setters
     public void setReminderCount(int reminderCount) {
         this.reminderCount = reminderCount;
     }
@@ -47,4 +45,6 @@ public class Reminder {
     public void setStartingDate(Date startingDate) {
         this.startingDate = startingDate;
     }
+
+    //endregion
 }

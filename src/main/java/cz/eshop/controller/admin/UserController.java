@@ -27,13 +27,14 @@ public class UserController {
     private AuthoritiesRepository authRepo;
 
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
-    public String addUser(Model model, @Valid @ModelAttribute UserDto dto, BindingResult bindingResult) {
+    public String addUser(Model model, @Valid @ModelAttribute UserDto dto/*htp reques nový uživatel, nebudu mít 6 parametru, ale budu posílát celou tridu*/, BindingResult bindingResult) {
         String message = null;
         if (StringUtils.isEmpty(dto.getUser().getUsername()) || StringUtils.isEmpty(dto.getUser().getPassword())) {
             model.addAttribute("message", "Vyplňte všecha pole");
             return "admin/user";
         }
         try {
+
             if (bindingResult.hasErrors()) {
                 return "admin/user";
             }
@@ -50,11 +51,12 @@ public class UserController {
     }
 
     @RequestMapping(value = "/removeUser", method = RequestMethod.GET)
-    public String remove(Model model, @RequestParam String username) {
+    public String remove(Model model /*objekt v html vidět*/, @RequestParam String username /*parametrw kterej prijde v requestu*/) {
         Authorities a = authRepo.filterByUsername(username).get(0);
         authRepo.delete(a);
         User u = userRepo.filterByUsername(username).get(0);
         userRepo.delete(u);
+        /*response v požadavku v html*/
         model.addAttribute("isValidInput", true);
         model.addAttribute("user", new User());
         model.addAttribute("userDto", new UserDto());
@@ -62,7 +64,7 @@ public class UserController {
         return "admin/user";
     }
 
-    @RequestMapping(value = "/showUsers", method = RequestMethod.POST)
+    @RequestMapping(value = "/showUsers", method = RequestMethod.POST /*znovu odeslani a nejsou vidět data v url*/)
     public String getUser(Model model, @ModelAttribute UserDto dto) {
         model.addAttribute("results", userRepo.filterByUsername(dto.getUser().getUsername()));
         model.addAttribute("authorities", AuthoritiesEnum.values());

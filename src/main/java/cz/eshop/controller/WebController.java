@@ -1,8 +1,6 @@
 package cz.eshop.controller;
 
 
-import cz.eshop.model.Cart;
-import cz.eshop.utils.Util;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -11,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,14 +19,12 @@ public class WebController {
 
     @RequestMapping(value = {"/index", "/"})
     public String showHomePage(HttpServletRequest request, Model model) {
-        Cart cart = Util.getOrCreateCartForSession(request);
         return "index";
     }
 
     @RequestMapping(value = {"/products"})
     public String showProductPage(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
-        Cart cart = Util.getOrCreateCartForSession(request);
         return "offer";
     }
 

@@ -2,16 +2,16 @@ package cz.eshop.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name="Parents")
+@Table(name="parents")
 public class Parent {
+    @Id
+    @GeneratedValue
     private long id;
     private String firstName;
     private String lastName;
@@ -20,33 +20,39 @@ public class Parent {
     private boolean agreement;
     private int tel;
 
-    @Id
+    @OneToMany(mappedBy = "parent")
+    private List<User> users;
+
+    //region getters
     @NotNull
-    @NotEmpty
-    @Column(name ="id", nullable = false)
+
+    @Column(name ="parent_id", nullable = false)
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+
+    @NotNull
+    @Column(name = "user_id")
+    public List<User> getUsers() {
+        return users;
     }
 
-    @NotEmpty
+
     @NotNull
     @Column(name = "firstName")
     public String getFirstName() {
         return firstName;
     }
 
-    @NotEmpty
+
     @NotNull
     @Column(name = "lastName")
     public String getLastName() {
         return lastName;
     }
 
-    @NotEmpty
+
     @NotNull
     @Column(name = "emial")
     public String getEmial() {
@@ -58,19 +64,23 @@ public class Parent {
         return bornDate;
     }
 
-    @NotEmpty
+
     @NotNull
     @Column(name = "agreement")
     public boolean isAgreement() {
         return agreement;
     }
 
-    @NotEmpty
+
     @Column(name = "tel")
     public int getTel() {
         return tel;
     }
 
+
+    //endregion
+
+    //region setters
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -94,4 +104,10 @@ public class Parent {
     public void setTel(int tel) {
         this.tel = tel;
     }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    //endregion
 }

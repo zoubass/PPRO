@@ -1,37 +1,80 @@
 package cz.eshop.model;
 
+import cz.eshop.model.Types.BeltTypes;
+import cz.eshop.model.Types.RoleTypes;
+import cz.eshop.model.Types.StripeTypes;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue
+    private long id;
+
     private String username;
     private String firstName;
     private String lastName;
     private String email;
-    private Belt belt;
+    //TODO hodit do prazdneho constructoru
+    private BeltTypes belt = BeltTypes.WHITE;
+    private int stripes = StripeTypes.ZERO.Number();
     private String password;
+    private RoleTypes role;
     private int tel;
     private Date bornDate;
     private boolean enabled;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
     private Parent parent;
 
-    @Id
+    @OneToOne
+    @JoinColumn(name = "reminder_id")
+    private Reminder reminder;
+
+    @OneToOne
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
+
+    //region getters
     @NotNull
-    @NotEmpty
+
+    @Column(name = "user_id", nullable = false)
+    public long getId() {
+        return id;
+    }
+
+    @Column(name = "parent_id")
+    public Parent getParent() {
+        return parent;
+    }
+
+    @Column(name = "reminder_id")
+    public Reminder getReminder() {
+        return reminder;
+    }
+
+    @Column(name = "ticket_id")
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    @NotNull
+
     @Column(name = "username", nullable = false)
     public String getUsername() {
         return username;
     }
 
-    @Size(max=50)
+
     @Column(name = "password")
-    @NotEmpty
     public String getPassword() {
         return password;
     }
@@ -42,48 +85,57 @@ public class User {
         return enabled;
     }
 
-    @NotEmpty
+
     @Column(name = "firstName")
     public String getFirstName() {
         return firstName;
     }
 
-    @NotEmpty
+
     @Column(name = "lastName")
     public String getLastName() {
         return lastName;
     }
 
-    @NotEmpty
+
     @Column(name = "email")
     public String getEmail() {
         return email;
     }
 
-    @Size(max=15)
     @Column(name = "tel")
     public int getTel() {
         return tel;
     }
 
     @NotNull
-    @NotEmpty
+
     @Column(name = "bornDate")
     public Date getBornDate() {
         return bornDate;
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "belt")
-    public Belt getBelt() {
+    public BeltTypes getBelt() {
         return belt;
     }
 
-    @Column(name = "parent")
-    public Parent getParent() {
-        return parent;
+    @Column(name = "stripe")
+    public int getStripes() {
+        return stripes;
     }
 
+    @Enumerated(EnumType.STRING)
+    @NotNull
 
+    @Column(name = "role")
+    public RoleTypes getRole() {
+        return role;
+    }
+    //endregion
+
+    //region setters
     public void setUsername(String username) {
         this.username = username;
     }
@@ -116,11 +168,28 @@ public class User {
         this.bornDate = bornDate;
     }
 
-    public void setBelt(Belt belt) {
+    public void setBelt(BeltTypes belt) {
         this.belt = belt;
+    }
+
+    public void setStripes(int stripes) {
+        this.stripes = stripes;
     }
 
     public void setParent(Parent parent) {
         this.parent = parent;
     }
+
+    public void setReminder(Reminder reminder) {
+        this.reminder = reminder;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
+    public void setRole(RoleTypes role) {
+        this.role = role;
+    }
+    //endregion
 }
