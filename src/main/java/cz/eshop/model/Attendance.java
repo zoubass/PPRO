@@ -2,42 +2,58 @@ package cz.eshop.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
 @Table(name = "attendance")
 public class Attendance {
-    private User user;
-    private Training training;
-    private Date date;
-
     @Id
+    @GeneratedValue
+    private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "training_id")
+    private Training training;
+    private Date trainingDate;
+
+    //region getters
+
     @NotNull
-    @NotEmpty
-    @Column(name = "user")
+    @Column(name="attendance_id", nullable = false)
+    public long getId() {
+        return id;
+    }
+
+    @NotNull
+
+    @Column(name = "user_id")
     public User getUser() {
         return user;
     }
 
-    @NotEmpty
+
+
     @NotNull
-    @Column(name = "training")
+    @Column(name = "training_id")
     public Training getTraining() {
         return training;
     }
 
-    @NotEmpty
-    @NotNull
-    @Column(name = "date")
-    public Date getDate() {
-        return date;
-    }
 
+    @NotNull
+    @Column(name = "trainingDate")
+    public Date getTrainingDate() {
+        return trainingDate;
+    }
+    //endregion
+
+    //region setters
     public void setUser(User user) {
         this.user = user;
     }
@@ -46,7 +62,9 @@ public class Attendance {
         this.training = training;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTrainingDate(Date trainingDate) {
+        this.trainingDate = trainingDate;
     }
+
+    //endregion
 }

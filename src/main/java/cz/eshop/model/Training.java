@@ -2,74 +2,110 @@ package cz.eshop.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "trainings")
 public class Training {
+    @Id
+    @GeneratedValue
     private long id;
+
     private String title;
     private Date beginning;
-    private Date end;
-    private TrainingLevel trainingLevel;
-    private List<User> coaches;
+    private Date ending;
+    private int trainingLevel;
+    private String coach;
+    private int capacity;
     private String note;
 
-    @Id
+
+    //region getters
     @NotNull
-    @NotEmpty
-    @Column(name ="id", nullable = false)
+
+    @Column(name ="training_id", nullable = false)
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     @NotNull
-    @NotEmpty
+
     @Column(name = "title")
     public String getTitle() {
         return title;
     }
 
     @NotNull
-    @NotEmpty
+
     @Column(name = "beginning")
     public Date getBeginning() {
         return beginning;
     }
 
     @NotNull
-    @NotEmpty
-    @Column(name = "end")
-    public Date getEnd() {
-        return end;
+
+    @Column(name = "ending")
+    public Date getEnding() {
+        return ending;
     }
 
     @NotNull
-    @NotEmpty
+
     @Column(name = "level")
-    public TrainingLevel getTrainingLevel() {
+    public int getTrainingLevel() {
         return trainingLevel;
     }
 
     @NotNull
-    @NotEmpty
-    @Column(name = "coaches")
-    public List<User> getCoaches() {
-        return coaches;
+
+    @Column(name = "coach")
+    public String getCoaches() {
+        return coach;
+    }
+
+    @NotNull
+
+    @Column(name = "capacity")
+    public int getCapacity() {
+        return capacity;
     }
 
     @Column(name = "note")
     public String getNote() {
         return note;
     }
+    //endregion
+
+    //region setters
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setBeginning(Date beginning) {
+        this.beginning = beginning;
+    }
+
+    public void setEnding(Date ending) {
+        this.ending = ending;
+    }
+
+    public void setTrainingLevel(int trainingLevel) {
+        this.trainingLevel = trainingLevel;
+    }
+
+    public void setCoaches(String coach) {
+        this.coach = coach;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    //endregion
 }
