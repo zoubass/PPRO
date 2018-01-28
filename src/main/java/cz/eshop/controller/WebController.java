@@ -64,4 +64,14 @@ public class WebController {
         return "login";
 
     }
+
+    @RequestMapping(value = "/training", method = RequestMethod.GET)
+    public String trainingPage(HttpServletRequest request, Model model){
+        return "training";
+    }
+
+    @RequestMapping(value = "/attendance", method = RequestMethod.GET)
+    public String attendancePage(HttpServletRequest request, Model model){
+        return "attendance";
+    }
 }

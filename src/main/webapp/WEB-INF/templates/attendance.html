@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head th:include="fragments::head" />
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" th:include="fragments::nav" />
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="index.html">Home</a>
+            </li>
+            <li class="breadcrumb-item active">Docházka</li>
+        </ol>
+
+        <div class="card mb-3">
+            <!--Table Card Header-->
+            <div class="card-header">
+                <i class="fa fa-table"></i> Výpis docházky</div>
+            <!--Table Card Body-->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Uživatel</th>
+                            <th>Název</th>
+                            <th>Datum</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Uživatel</th>
+                            <th>Název</th>
+                            <th>Datum</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr>
+                            <td>Mišánek</td>
+                            <td>Trénál</td>
+                            <td>27.1.2017 19:30</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--Table Card Footer-->
+            <div class="card-footer small text-muted">Aktualizováno dnes v 11:59 PM</div>
+        </div>
+
+        <!--Footer-->
+        <footer class="sticky-footer" id="myFooter" th:include="fragments::footer" />
+
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fa fa-angle-up"></i>
+        </a>
+    </div>
+
+    <!-- Custom scripts for this page-->
+    <script src="js/sb-admin-datatables.min.js"></script>
+</div>
+</body>
+</html>
