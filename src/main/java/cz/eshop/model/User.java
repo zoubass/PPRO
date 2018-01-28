@@ -109,7 +109,6 @@ public class User {
     }
 
     @NotNull
-
     @Column(name = "bornDate")
     public Date getBornDate() {
         return bornDate;
@@ -121,7 +120,7 @@ public class User {
         return belt;
     }
 
-    @Column(name = "stripe")
+    @Column(name = "stripes")
     public int getStripes() {
         return stripes;
     }
