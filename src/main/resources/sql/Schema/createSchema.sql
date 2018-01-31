@@ -7,14 +7,16 @@ CREATE TABLE if NOT EXISTS users(
   constraint user_reminder_fk FOREIGN KEY(reminder_id) REFERENCES reminders(reminder_id) ON DELETE CASCADE,
   constraint user_tiket_fk FOREIGN KEY(ticket_id) REFERENCES tickets(ticket_id) ON DELETE CASCADE,
   userName nvarchar(50) NOT NULL,
+  password nvarchar(50) NOT NULL,
   firstName nvarchar(25) NOT NULL,
   lastName nvarchar(25) NOT NULL,
   email nvarchar(50) NOT NULL,
   belt nvarchar(10) NULL,
-  stripe NUMERIC(1,0) NULL,
+  stripes NUMERIC(1,0) NULL,
+  role nvarchar(25) NOT NULL,
   tel int NULL,
   bornDate DATE NOT NULL,
-  role nvarchar(25) NOT NULL
+  enabled BIT NOT NULL
 );
 CREATE UNIQUE INDEX ix_username on users(username, lastname);
 
@@ -31,19 +33,17 @@ CREATE TABLE  IF NOT EXISTS attendance(
   user_id int not null,
   training_id int not null,
   constraint att_train_fk FOREIGN KEY(training_id) REFERENCES trainings(training_id) ON DELETE CASCADE,
-  constraint att_user_fk FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-  trainingDate DATE NOT NULL
+  constraint att_user_fk FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS parents(
   parent_id int IDENTITY (1,1) PRIMARY KEY,
-  user_id int not null,
-  constraint par_user_fk FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
   firstName nvarchar(25) NOT NULL,
   lastName nvarchar(25) NOT NULL,
   email nvarchar(50) NOT NULL,
+  bornDate DATE NULL,
   agreement bit NOT NULL,
-  tel int NULL
+  tel int NOT NULL
 );
 CREATE UNIQUE INDEX ix_parents ON parents(lastname);
 
@@ -56,8 +56,8 @@ CREATE TABLE IF NOT EXISTS reminders(
 CREATE TABLE IF NOT EXISTS tickets(
   ticket_id int IDENTITY (1,1) PRIMARY KEY,
   entry int NOT NULL,
-  endingDate DATE NOT NULL,
-  startingDate DATE NOT NULL,
+  endingDate DATE NULL,
+  startingDate DATE NULL,
   isTimeTicket BIT NOT NULL
 );
 
@@ -72,3 +72,8 @@ CREATE TABLE IF NOT EXISTS trainings(
   note nvarchar(500) NULL
 );
 CREATE UNIQUE INDEX ix_trainig ON trainings(title);
+
+CREATE TABLE IF NOT EXISTS test(
+  test_id int IDENTITY (1,1) PRIMARY KEY,
+  entry int NOT NULL
+);

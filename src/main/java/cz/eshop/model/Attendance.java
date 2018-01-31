@@ -20,7 +20,6 @@ public class Attendance {
     @OneToOne
     @JoinColumn(name = "training_id")
     private Training training;
-    private Date trainingDate;
 
     //region getters
 
@@ -44,13 +43,6 @@ public class Attendance {
     public Training getTraining() {
         return training;
     }
-
-
-    @NotNull
-    @Column(name = "trainingDate")
-    public Date getTrainingDate() {
-        return trainingDate;
-    }
     //endregion
 
     //region setters
@@ -61,10 +53,5 @@ public class Attendance {
     public void setTraining(Training training) {
         this.training = training;
     }
-
-    public void setTrainingDate(Date trainingDate) {
-        this.trainingDate = trainingDate;
-    }
-
     //endregion
 }

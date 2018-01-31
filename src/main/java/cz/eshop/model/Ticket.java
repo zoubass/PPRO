@@ -30,27 +30,21 @@ public class Ticket {
     }
 
     @NotNull
-
     @Column(name = "user_id")
     public User getUser() {
         return user;
     }
 
     @NotNull
-
     @Column(name = "endry")
     public int getEntry() {
         return entry;
     }
 
-    @NotNull
-
     @Column(name = "endingDate")
     public Date getEndingDate() {
         return endingDate;
     }
-
-    @NotNull
 
     @Column(name = "startingDate")
     public Date getStartingDate() {
@@ -58,7 +52,6 @@ public class Ticket {
     }
 
     @NotNull
-
     @Column(name = "isTimeTicket")
     public boolean isTimeTicket() {
         return isTimeTicket;
