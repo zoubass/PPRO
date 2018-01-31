@@ -33,8 +33,7 @@ CREATE TABLE  IF NOT EXISTS attendance(
   user_id int not null,
   training_id int not null,
   constraint att_train_fk FOREIGN KEY(training_id) REFERENCES trainings(training_id) ON DELETE CASCADE,
-  constraint att_user_fk FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-  trainingDate DATE NOT NULL
+  constraint att_user_fk FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS parents(

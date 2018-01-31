@@ -11,7 +11,6 @@ import java.util.List;
 @Transactional
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    /*jen rozšíření*/
     @Query("select U from User U where U.username like CONCAT(:username, '%')")
     List<User> filterByUsername(@Param("username") String username);
 }

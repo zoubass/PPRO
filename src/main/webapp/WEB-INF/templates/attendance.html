@@ -36,13 +36,20 @@
                             <th>Datum</th>
                         </tr>
                         </tfoot>
-                        <tbody>
+                        <tbody th:each = "att : ${attList}">
                         <tr>
-                            <td>Mišánek</td>
-                            <td>Trénál</td>
-                            <td>27.1.2017 19:30</td>
+                            <td th:text="${att.user.username}"></td>
+                            <td th:text="${att.training.title}"></td>
+                            <td th:text="${att.training.beginning}"></td>
                         </tr>
                         </tbody>
+                        <!--<tbody>-->
+                        <!--<tr>-->
+                            <!--<td>Mišánek</td>-->
+                            <!--<td>Trénál</td>-->
+                            <!--<td>27.1.2017 19:30</td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
                     </table>
                 </div>
             </div>
