@@ -1,12 +1,9 @@
 package cz.eshop.controller.admin;
 
-import cz.eshop.dao.AuthoritiesRepository;
-import cz.eshop.dao.UserRepository;
 import cz.eshop.dto.UserDto;
-import cz.eshop.model.Authorities;
-import cz.eshop.model.AuthoritiesEnum;
 import cz.eshop.model.User;
-import org.apache.commons.lang.StringUtils;
+import cz.eshop.service.AuthoritiesService;
+import cz.eshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,62 +18,73 @@ import javax.validation.Valid;
 @Controller
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepo;
-    @Autowired
-    private AuthoritiesRepository authRepo;
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private AuthoritiesService authoritiesService;
 
-    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
-    public String addUser(Model model, @Valid @ModelAttribute UserDto dto/*htp reques nový uživatel, nebudu mít 6 parametru, ale budu posílát celou tridu*/, BindingResult bindingResult) {
-        String message = null;
-        if (StringUtils.isEmpty(dto.getUser().getUsername()) || StringUtils.isEmpty(dto.getUser().getPassword())) {
-            model.addAttribute("message", "Vyplňte všecha pole");
-            return "admin/user";
-        }
-        try {
+	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
+	public String addUser(Model model, @ModelAttribute @Valid UserDto userDto, BindingResult bindingResult, @RequestParam(value = "isEditOp", required = false) boolean isEditOp) {
 
-            if (bindingResult.hasErrors()) {
-                return "admin/user";
-            }
-            dto.getAuthorities().setUsername(dto.getUser().getUsername());
-            userRepo.save(dto.getUser());
-            authRepo.save(dto.getAuthorities());
-            message = "Uživatel úspěšně vytvořen.";
-            model.addAttribute("authorities", AuthoritiesEnum.values());
-        } catch (Exception e) {
-            message = "Vytvoření uživatele se nezdařilo.";
-        }
-        model.addAttribute("message", message);
-        return "admin/user";
-    }
+		if (bindingResult.hasErrors()) {
+			return prepareModel(model, userService.findAll(), userDto, isEditOp);
+		}
+		
+		if (!isEditOp) {
+			if (userService.isNotUniqueUsername(userDto)) {
+				model.addAttribute("users", userService.findAll());
+				model.addAttribute("userDto", userDto);
+				model.addAttribute("isUsernameUsed", true);
+				model.addAttribute("isEditOp", false);
+				return "user";
+			}	
+		}
 
-    @RequestMapping(value = "/removeUser", method = RequestMethod.GET)
-    public String remove(Model model /*objekt v html vidět*/, @RequestParam String username /*parametrw kterej prijde v requestu*/) {
-        Authorities a = authRepo.filterByUsername(username).get(0);
-        authRepo.delete(a);
-        User u = userRepo.filterByUsername(username).get(0);
-        userRepo.delete(u);
-        /*response v požadavku v html*/
-        model.addAttribute("isValidInput", true);
-        model.addAttribute("user", new User());
-        model.addAttribute("userDto", new UserDto());
-        model.addAttribute("authorities", AuthoritiesEnum.values());
-        return "admin/user";
-    }
+		userService.saveUser(userDto);
+		return prepareModel(model, userService.findAll(), new UserDto(), false);
+	}
+	
 
-    @RequestMapping(value = "/showUsers", method = RequestMethod.POST /*znovu odeslani a nejsou vidět data v url*/)
-    public String getUser(Model model, @ModelAttribute UserDto dto) {
-        model.addAttribute("results", userRepo.filterByUsername(dto.getUser().getUsername()));
-        model.addAttribute("authorities", AuthoritiesEnum.values());
-        model.addAttribute("userDto", new UserDto());
-        return "admin/user";
-    }
+	@RequestMapping(value = "/removeUser", method = RequestMethod.GET)
+	public String remove(Model model, @RequestParam Long id) {
+		userService.removeUser(id);
+		model.addAttribute("userDto", new UserDto());
+		model.addAttribute("isEditOp", false);
+		model.addAttribute("users", userService.findAll());
+		return "user";
+	}
 
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public String showUserForm(Model model) {
-        model.addAttribute("authorities", AuthoritiesEnum.values());
-        model.addAttribute("user", new User());
-        model.addAttribute("userDto", new UserDto());
-        return "admin/user";
-    }
+	@RequestMapping(value = "/editUser", method = RequestMethod.GET)
+	public String edit(Model model, @RequestParam Long id) {
+		UserDto userDto = new UserDto();
+
+		User user = userService.findById(id);
+		userDto.setAuthorities(authoritiesService.findUserAuthority(user.getUsername()));
+		userDto.setUser(user);
+		
+		model.addAttribute("userDto", userDto);
+		model.addAttribute("isEditOp", true);
+		model.addAttribute("users", userService.findAll());
+		return "user";
+	}
+
+	@RequestMapping(value = "/user", method = RequestMethod.GET)
+	public String getUser(Model model, @ModelAttribute UserDto dto) {
+		model.addAttribute("users", userService.findAll());
+		model.addAttribute("userDto", new UserDto());
+		model.addAttribute("isEditOp", false);
+
+		return "user";
+	}
+
+	/**
+	 * Helper methods for reuse
+	 */
+	private String prepareModel(Model model, Iterable<User> users, UserDto userDto, boolean isEditOp) {
+		model.addAttribute("users", userService.findAll());
+		model.addAttribute("userDto", userDto);
+		model.addAttribute("isEditOp", isEditOp);
+		return "user";
+	}
 }

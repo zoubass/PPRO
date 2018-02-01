@@ -21,7 +21,7 @@ VALUES (1, DATE '2018-01-27');
 
 -- region Users
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
-VALUES (NULL , 1, NULL, 'Strikac123', 'pass', 'Lukyn', 'Kebouz', 'lukyn@gmail.com', 0, 0, 777888999, TIMESTAMP '1994-05-27', 1, 0);
+VALUES (NULL , 1, 1, 'strikac', 'strikac', 'Lukyn', 'Kebouz', 'lukyn@gmail.com', 0, 0, 777888999, DATE '1994-05-27', 1, 1);
 
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
 VALUES (NULL , NULL , 1, 'Mišánek', 'pass', 'Michal', 'Lapcaz', 'misanek@gmail.com', 0, 3, 111222333, TIMESTAMP '1994-02-01', 0, 0);
@@ -52,8 +52,9 @@ INSERT INTO attendance(user_id, training_id)
 VALUES (2, 2);
 
 -- endregion
--- INSERT INTO authorities(fk_authorities_users, username, authority)
--- VALUES (1, 'Strikac123', 0);
+INSERT INTO authorities(username, authority) 
+values ('strikac', 'ROLE_ADMIN');
+
 --
 -- INSERT INTO authorities(fk_authorities_users, username, authority)
 -- VALUES (2, 'Mišánek', 2);

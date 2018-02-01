@@ -3,33 +3,45 @@ package cz.eshop.model;
 import cz.eshop.model.Types.BeltTypes;
 import cz.eshop.model.Types.RoleTypes;
 import cz.eshop.model.Types.StripeTypes;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
-    @Id
-    @GeneratedValue
-    private long id;
+	@Id
+	@GeneratedValue
+	private long id;
 
-    private String username;
-    private String firstName;
-    private String lastName;
-    private String email;
-    //TODO hodit do prazdneho constructoru
-    private BeltTypes belt = BeltTypes.WHITE;
-    private int stripes = StripeTypes.ZERO.Number();
-    private String password;
-    private RoleTypes role;
-    private int tel;
-    private Date bornDate;
-    private boolean enabled;
+	@NotNull
+	@Size(min = 3, max = 20)
+	private String username;
+	@NotNull
+	@Size(min = 3, max = 50)
+	private String firstName;
+	@NotNull
+	@Size(min = 3, max = 50)
+	private String lastName;
+	@NotNull
+	@Size(min = 3, max = 50)
+	private String email;
+	//TODO hodit do prazdneho constructoru
+	private BeltTypes belt = BeltTypes.WHITE;
+	private int stripes = StripeTypes.ZERO.Number();
+	@NotNull
+	@Size(min = 5, max = 20)
+	private String password;
+	@NotNull
+	private RoleTypes role;
+	@NotNull
+	private int tel;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date bornDate;
+	private boolean enabled;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
@@ -67,7 +79,6 @@ public class User {
     }
 
     @NotNull
-
     @Column(name = "username", nullable = false)
     public String getUsername() {
         return username;
@@ -114,11 +125,11 @@ public class User {
         return bornDate;
     }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "belt")
-    public BeltTypes getBelt() {
-        return belt;
-    }
+	@Enumerated(EnumType.STRING)
+	@Column(name = "belt")
+	public BeltTypes getBelt() {
+		return belt;
+	}
 
     @Column(name = "stripes")
     public int getStripes() {
@@ -127,7 +138,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-
     @Column(name = "role")
     public RoleTypes getRole() {
         return role;
