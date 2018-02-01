@@ -5,7 +5,7 @@ import cz.eshop.model.Training;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TrainingService {
@@ -13,8 +13,53 @@ public class TrainingService {
     @Autowired
     private TrainingRepository trainingRepository;
 
+    /**Returns list of all trainings*/
     public List<Training> getAllTrainings(){
-
         return (List<Training>) trainingRepository.findAll();
     }
+
+    //TODO rewrite to SQL query
+    /**Returns list of training with same time(Week, Month...)
+     *
+     * @param myTime a start time for listing
+     * @param CalendarTypeOfTime a static int of Calendar class - example Calendar.MONTH*/
+    public List<Training> getTimeTrainings(Calendar myTime, int CalendarTypeOfTime){
+        List<Training> allT = getAllTrainings();
+        List<Training> timeT = new ArrayList<>();
+
+        for (Training t: allT){
+            Calendar trainTime = Calendar.getInstance();
+            trainTime.setTime(t.getBeginning());
+
+            if(trainTime.get(CalendarTypeOfTime) == myTime.get(CalendarTypeOfTime) &&
+                    trainTime.get(Calendar.YEAR) == myTime.get(Calendar.YEAR)){
+                timeT.add(t);
+            }
+        }
+        return timeT;
+    }
+
+    /**Returns list of training reduced by the number of Time
+     *
+     * @param myTime a start time for listing
+     * @param CalendarTypeOfTime a static int of Calendar class - example Calendar.MONTH
+     * @param timeBack the number of time for reduce*/
+    public List<Training> getTimeBackTrainings(Calendar myTime, int CalendarTypeOfTime, int timeBack) {
+        List<Training> allT = getAllTrainings();
+        List<Training> timeT = new ArrayList<>();
+        Calendar reduceT = myTime;
+        reduceT.add(CalendarTypeOfTime, -(timeBack));
+
+        for (Training t: allT){
+            Calendar trainTime = Calendar.getInstance();
+            trainTime.setTime(t.getBeginning());
+
+            if(reduceT.get(CalendarTypeOfTime) <= trainTime.get(CalendarTypeOfTime) &&
+                    trainTime.get(CalendarTypeOfTime) <= myTime.get(CalendarTypeOfTime)){
+                timeT.add(t);
+            }
+        }
+        return  timeT;
+    }
+
 }

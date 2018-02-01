@@ -17,7 +17,7 @@
         <div id="addTrainingForm" class="card mx-auto mt-5 mb-5" style="display:none">
             <div class="card-header">Nový trénink</div>
             <div class="card-body">
-                <form method="POST" th:action="@{/saveTraining}" th:object="${newTraining}">
+                <form method="GET" th:action="@{/saveTraining}" th:object="${newTraining}">
                     <div class="form-group">
                         <label for="inputTitle">Název</label>
                         <input class="form-control" th:field="*{title}" id="inputTitle" type="text"
@@ -72,6 +72,18 @@
                 <div class="form-row">
                     <div class="col-md-9">
                         <i class="fa fa-table"></i> Výpis tréninků
+                        <div>
+                            <form method="GET" th:action="@{/filterTraining}" th:object="${timeType}">
+                                <label>Zobrazit: </label>
+                                <select th:field="*{types}">
+                                    <option th:each="period:${T(cz.eshop.model.Types.FilterTypes).values()}"
+                                            th:value="${period}"
+                                            th:text="${period}">
+                                    </option>
+                                </select>
+                                <input type="submit" class="btn btn-primary" value="OK"/>
+                            </form>
+                        </div>
                     </div>
                     <div class="col-md-3">
                         <button class="btn btn-primary btn-block" type="button" onClick="showForm()">Přidat</button>

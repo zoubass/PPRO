@@ -64,11 +64,4 @@ public class WebController {
         return "login";
 
     }
-
-    @RequestMapping(value = "/attendance", method = RequestMethod.GET)
-    public String attendancePage(HttpServletRequest request, Model model){
-        return "attendance";
-    }
-
-
 }

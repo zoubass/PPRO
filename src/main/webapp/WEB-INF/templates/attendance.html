@@ -16,8 +16,19 @@
 
         <div class="card mb-3">
             <!--Table Card Header-->
-            <div class="card-header">
-                <i class="fa fa-table"></i> Výpis docházky</div>
+            <div class="card-header form-row">
+                <div class="col-md-9">
+                <i class="fa fa-table"></i> Výpis docházky
+                </div>
+                <div class="col-md-3" align="right">
+                    <label>Zobrazit za: </label>
+                    <select>
+                        <option value="month">Měsíc</option>
+                        <option value="week">Týden</option>
+                        <option value="day">Den</option>
+                    </select>
+                </div>
+            </div>
             <!--Table Card Body-->
             <div class="card-body">
                 <div class="table-responsive">
@@ -43,13 +54,6 @@
                             <td th:text="${att.training.beginning}"></td>
                         </tr>
                         </tbody>
-                        <!--<tbody>-->
-                        <!--<tr>-->
-                            <!--<td>Mišánek</td>-->
-                            <!--<td>Trénál</td>-->
-                            <!--<td>27.1.2017 19:30</td>-->
-                        <!--</tr>-->
-                        <!--</tbody>-->
                     </table>
                 </div>
             </div>
