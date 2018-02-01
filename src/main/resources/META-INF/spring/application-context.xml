@@ -11,6 +11,7 @@
 
     <jpa:repositories base-package="cz.eshop.dao"/>
     <context:annotation-config/>
+    <context:component-scan base-package="cz.eshop.service" />
     <mvc:annotation-driven/>
     <context:component-scan base-package="cz.eshop.service" />
 
@@ -28,20 +29,28 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
+    <!--region H2DB-->
+    <bean id="h2Server" class="org.h2.tools.Server" factory-method="createTcpServer" init-method="start" destroy-method="stop" depends-on="h2WebServer">
+        <constructor-arg value="-tcp,-tcpAllowOthers,-tcpPort,9092"/>
+    </bean>
+
+    <bean id="h2WebServer" class="org.h2.tools.Server" factory-method="createWebServer" init-method="start" destroy-method="stop">
+        <constructor-arg value="-web,-webAllowOthers,-webPort,8082"/>
+    </bean>
+
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="${driver}"/>
-        <property name="url"
-                  value="${url}"/>
+        <property name="url" value="${url}"/>
         <property name="username" value="${user}"/>
         <property name="password" value="${pass}"/>
-
-
     </bean>
+    <!--endregion-->
 
     <bean id="initilizer" class="org.springframework.jdbc.datasource.init.DataSourceInitializer">
         <property name="databasePopulator" ref="dataPopulator"/>
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
 
     <bean id="dataPopulator" class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
         <property name="scripts">

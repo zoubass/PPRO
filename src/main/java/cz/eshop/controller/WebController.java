@@ -1,8 +1,6 @@
 package cz.eshop.controller;
 
-import cz.eshop.dao.AuthoritiesRepository;
-import cz.eshop.dao.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -51,6 +49,16 @@ public class WebController {
 		}
 		return "login";
 	}
+
+        return "login";
+
+    }
+
+    @RequestMapping(value = "/attendance", method = RequestMethod.GET)
+    public String attendancePage(HttpServletRequest request, Model model){
+        return "attendance";
+    }
+
 
 	@RequestMapping(value = "/loginAuth")
 	private String loginAuthentication() {

@@ -1,9 +1,12 @@
 package cz.eshop.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -24,49 +27,46 @@ public class Training {
 
     //region getters
     @NotNull
-
     @Column(name ="training_id", nullable = false)
     public long getId() {
         return id;
     }
 
     @NotNull
-
     @Column(name = "title")
     public String getTitle() {
         return title;
     }
 
     @NotNull
-
     @Column(name = "beginning")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     public Date getBeginning() {
         return beginning;
     }
 
     @NotNull
-
     @Column(name = "ending")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     public Date getEnding() {
         return ending;
     }
 
     @NotNull
-
     @Column(name = "level")
     public int getTrainingLevel() {
         return trainingLevel;
     }
 
     @NotNull
-
     @Column(name = "coach")
-    public String getCoaches() {
+    public String getCoach() {
         return coach;
     }
 
     @NotNull
-
     @Column(name = "capacity")
     public int getCapacity() {
         return capacity;
@@ -95,7 +95,7 @@ public class Training {
         this.trainingLevel = trainingLevel;
     }
 
-    public void setCoaches(String coach) {
+    public void setCoach(String coach) {
         this.coach = coach;
     }
 

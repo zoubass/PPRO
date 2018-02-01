@@ -43,85 +43,87 @@ public class User {
 	private Date bornDate;
 	private boolean enabled;
 
-	@ManyToOne
-	@JoinColumn(name = "parent_id")
-	private Parent parent;
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Parent parent;
 
-	@OneToOne
-	@JoinColumn(name = "reminder_id")
-	private Reminder reminder;
+    @OneToOne
+    @JoinColumn(name = "reminder_id")
+    private Reminder reminder;
 
-	@OneToOne
-	@JoinColumn(name = "ticket_id")
-	private Ticket ticket;
+    @OneToOne
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
 
-	//region getters
-	@NotNull
+    //region getters
+    @NotNull
 
-	@Column(name = "user_id", nullable = false)
-	public long getId() {
-		return id;
-	}
+    @Column(name = "user_id", nullable = false)
+    public long getId() {
+        return id;
+    }
 
-	@Column(name = "parent_id")
-	public Parent getParent() {
-		return parent;
-	}
+    @Column(name = "parent_id")
+    public Parent getParent() {
+        return parent;
+    }
 
-	@Column(name = "reminder_id")
-	public Reminder getReminder() {
-		return reminder;
-	}
+    @Column(name = "reminder_id")
+    public Reminder getReminder() {
+        return reminder;
+    }
 
-	@Column(name = "ticket_id")
-	public Ticket getTicket() {
-		return ticket;
-	}
+    @Column(name = "ticket_id")
+    public Ticket getTicket() {
+        return ticket;
+    }
 
-	@NotNull
+    @NotNull
+    @Column(name = "username", nullable = false)
+    public String getUsername() {
+        return username;
+    }
 
-	@Column(name = "username", nullable = false)
-	public String getUsername() {
-		return username;
-	}
 
-	@Column(name = "password")
-	public String getPassword() {
-		return password;
-	}
+    @Column(name = "password")
+    public String getPassword() {
+        return password;
+    }
 
-	@NotNull
-	@Column(name = "enabled")
-	public boolean getEnabled() {
-		return enabled;
-	}
+    @NotNull
+    @Column(name = "enabled")
+    public boolean getEnabled() {
+        return enabled;
+    }
 
-	@Column(name = "firstName")
-	public String getFirstName() {
-		return firstName;
-	}
 
-	@Column(name = "lastName")
-	public String getLastName() {
-		return lastName;
-	}
+    @Column(name = "firstName")
+    public String getFirstName() {
+        return firstName;
+    }
 
-	@Column(name = "email")
-	public String getEmail() {
-		return email;
-	}
 
-	@Column(name = "tel")
-	public int getTel() {
-		return tel;
-	}
+    @Column(name = "lastName")
+    public String getLastName() {
+        return lastName;
+    }
 
-	@NotNull
 
-	@Column(name = "bornDate")
-	public Date getBornDate() {
-		return bornDate;
-	}
+    @Column(name = "email")
+    public String getEmail() {
+        return email;
+    }
+
+    @Column(name = "tel")
+    public int getTel() {
+        return tel;
+    }
+
+    @NotNull
+    @Column(name = "bornDate")
+    public Date getBornDate() {
+        return bornDate;
+    }
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "belt")
@@ -129,75 +131,74 @@ public class User {
 		return belt;
 	}
 
-	@Column(name = "stripe")
-	public int getStripes() {
-		return stripes;
-	}
+    @Column(name = "stripes")
+    public int getStripes() {
+        return stripes;
+    }
 
-	@Enumerated(EnumType.STRING)
-	@NotNull
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(name = "role")
+    public RoleTypes getRole() {
+        return role;
+    }
+    //endregion
 
-	@Column(name = "role")
-	public RoleTypes getRole() {
-		return role;
-	}
-	//endregion
+    //region setters
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	//region setters
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setTel(int tel) {
+        this.tel = tel;
+    }
 
-	public void setTel(int tel) {
-		this.tel = tel;
-	}
+    public void setBornDate(Date bornDate) {
+        this.bornDate = bornDate;
+    }
 
-	public void setBornDate(Date bornDate) {
-		this.bornDate = bornDate;
-	}
+    public void setBelt(BeltTypes belt) {
+        this.belt = belt;
+    }
 
-	public void setBelt(BeltTypes belt) {
-		this.belt = belt;
-	}
+    public void setStripes(int stripes) {
+        this.stripes = stripes;
+    }
 
-	public void setStripes(int stripes) {
-		this.stripes = stripes;
-	}
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
 
-	public void setParent(Parent parent) {
-		this.parent = parent;
-	}
+    public void setReminder(Reminder reminder) {
+        this.reminder = reminder;
+    }
 
-	public void setReminder(Reminder reminder) {
-		this.reminder = reminder;
-	}
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
 
-	public void setTicket(Ticket ticket) {
-		this.ticket = ticket;
-	}
-
-	public void setRole(RoleTypes role) {
-		this.role = role;
-	}
-	//endregion
+    public void setRole(RoleTypes role) {
+        this.role = role;
+    }
+    //endregion
 }
