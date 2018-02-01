@@ -12,6 +12,7 @@
     <jpa:repositories base-package="cz.eshop.dao"/>
     <context:annotation-config/>
     <mvc:annotation-driven/>
+    <context:component-scan base-package="cz.eshop.service" />
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
@@ -46,7 +47,7 @@
         <property name="scripts">
             <list>
                 <value>classpath:sql/Schema/createSchema.sql</value>
-                <!--<value>classpath:sql/Data/insertData.sql</value>-->
+                <value>classpath:sql/Data/insertData.sql</value>
             </list>
         </property>
     </bean>
