@@ -15,4 +15,9 @@ public interface AttendanceRepository extends CrudRepository<Attendance, Long>{
 
     @Query("select A from Attendance A where A.training=:t")
     List<Attendance> filterByTraining(@Param("t")Training t);
+
+    @Query("select A from Attendance A where A.training=:t and A.user=:u")
+    Attendance filterByTrainingAndUser(@Param("t")Training t, @Param("u")User u);
+
+    //List<Attendance> findAllByTraining(@Param("training") Training training);
 }

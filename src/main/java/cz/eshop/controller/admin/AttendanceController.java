@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
@@ -31,9 +32,11 @@ public class AttendanceController {
         return "attendance";
     }
 
-    @RequestMapping(value = "/allAtendances", method = RequestMethod.GET)
-    public String getAllAttendance(Model model){
-        model.addAttribute("attList", attendanceService.getAllAttendances());
+    @RequestMapping(value = "/removeAttendance", method = RequestMethod.GET)
+    public String removeAttendance(Model model, @RequestParam Long userId, @RequestParam Long trainId) {
+        attendanceService.removeAttendance(userId, trainId);
+        model.addAttribute("attDataList", attendanceService.makeAtt(trainingService.getAllTrainings()));
+        model.addAttribute("timeType", new FilterTypePeriods());
         return "attendance";
     }
 

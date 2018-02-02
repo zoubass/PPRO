@@ -51,12 +51,16 @@
                                 <thead>
                                 <tr>
                                     <th>Účastník</th>
+                                    <th style="width: 10px">Odstranit</th>
                                 </tr>
                                 </thead>
 
                                 <tbody style="font-size: 14px" th:each="usr : ${attData.users}">
                                 <tr>
                                     <td th:text="${usr.firstName} + ' ' + ${usr.lastName}"></td>
+                                    <td>
+                                        <a th:href="@{/removeAttendance(userId = ${usr.id}, trainId = ${attData.training.id})}">odstranit</a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

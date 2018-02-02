@@ -1,6 +1,8 @@
 package cz.eshop.service;
 
+import cz.eshop.dao.AttendanceRepository;
 import cz.eshop.dao.TrainingRepository;
+import cz.eshop.model.Attendance;
 import cz.eshop.model.Training;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +14,28 @@ public class TrainingService {
 
     @Autowired
     private TrainingRepository trainingRepository;
+    @Autowired
+    private AttendanceRepository attendanceRepository;
 
     /**Returns list of all trainings*/
     public List<Training> getAllTrainings(){
         return (List<Training>) trainingRepository.findAll();
+    }
+
+    public void removeTraining(Long id){
+        Training training = trainingRepository.findById(id);
+        List<Attendance> attList = attendanceRepository.filterByTraining(training);
+        for(Attendance att:attList)
+            attendanceRepository.delete(att);
+        trainingRepository.delete(id);
+    }
+
+    public void saveTraninig(Training training){
+        trainingRepository.save(training);
+    }
+
+    public Training findTrainingById(Long id){
+        return trainingRepository.findById(id);
     }
 
     //TODO rewrite to SQL query
