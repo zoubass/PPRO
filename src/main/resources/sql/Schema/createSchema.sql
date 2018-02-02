@@ -1,8 +1,8 @@
 CREATE TABLE if NOT EXISTS users(
   user_id int IDENTITY (1,1) PRIMARY KEY,
-  parent_id int not null,
-  reminder_id int not null,
-  ticket_id int not null,
+  parent_id int null,
+  reminder_id int null,
+  ticket_id int null,
   constraint user_parent_fk FOREIGN KEY(parent_id) REFERENCES parents(parent_id) ON DELETE CASCADE,
   constraint user_reminder_fk FOREIGN KEY(reminder_id) REFERENCES reminders(reminder_id) ON DELETE CASCADE,
   constraint user_tiket_fk FOREIGN KEY(ticket_id) REFERENCES tickets(ticket_id) ON DELETE CASCADE,
