@@ -16,6 +16,13 @@ public class Reminder {
     private int reminderCount;
     private Date startingDate;
 
+    public Reminder(){}
+
+    public Reminder(int reminderCount, Date startingDate) {
+        this.reminderCount = reminderCount;
+        this.startingDate = startingDate;
+    }
+
     //region getters
 
     @NotNull

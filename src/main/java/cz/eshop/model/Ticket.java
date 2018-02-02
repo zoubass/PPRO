@@ -13,13 +13,11 @@ public class Ticket {
     @GeneratedValue
     private long id;
 
-    @OneToOne(mappedBy = "ticket")
-    private User user;
-    private int entry = 0;
+
+    private int entry;
     private Date startingDate;
     private Date endingDate;
     private boolean isTimeTicket;
-
 
     //region getters
 
@@ -29,11 +27,6 @@ public class Ticket {
         return id;
     }
 
-    @NotNull
-    @Column(name = "user_id")
-    public User getUser() {
-        return user;
-    }
 
     @NotNull
     @Column(name = "endry")
@@ -60,9 +53,6 @@ public class Ticket {
 
 
     //region setters
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public void setEntry(int entry) {
         this.entry = entry;

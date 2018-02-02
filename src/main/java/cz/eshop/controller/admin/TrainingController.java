@@ -4,6 +4,7 @@ import cz.eshop.dao.TrainingRepository;
 import cz.eshop.model.Training;
 import cz.eshop.model.Types.FilterTypePeriods;
 import cz.eshop.model.Types.FilterTypes;
+import cz.eshop.service.ReminderService;
 import cz.eshop.service.TrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sun.util.resources.cs.LocaleNames_cs;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -24,6 +26,8 @@ public class TrainingController {
 
     @Autowired
     private TrainingService trainingService;
+    @Autowired
+    private ReminderService remSer;
 
     @RequestMapping(value = "/training", method = RequestMethod.GET)
     public String getTraining(Model model) {
