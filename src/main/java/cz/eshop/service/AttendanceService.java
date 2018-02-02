@@ -18,6 +18,10 @@ public class AttendanceService {
 
     @Autowired
     private AttendanceRepository attRepo;
+    @Autowired
+    private TrainingRepository trainRepo;
+    @Autowired
+    private UserRepository userRepo;
 
     public List<Attendance> getAllAttendances(){
         return (List<Attendance>) attRepo.findAll();
@@ -35,5 +39,12 @@ public class AttendanceService {
             attData.add(new AttendanceData(t, users));
         }
         return attData;
+    }
+
+    public void removeAttendance(Long userId, Long trainId){
+        User user = userRepo.findById(userId);
+        Training train = trainRepo.findById(trainId);
+        Attendance att = attRepo.filterByTrainingAndUser(train,user);
+        attRepo.delete(att);
     }
 }

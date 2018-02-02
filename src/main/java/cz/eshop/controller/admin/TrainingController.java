@@ -24,10 +24,6 @@ public class TrainingController {
 
     @Autowired
     private TrainingService trainingService;
-    @Autowired
-    private TrainingRepository trainRepo;
-
-    private List<Training> currentTrainings;
 
     @RequestMapping(value = "/training", method = RequestMethod.GET)
     public String getTraining(Model model) {
@@ -35,16 +31,49 @@ public class TrainingController {
         model.addAttribute("trList",trainingService.getAllTrainings());
         model.addAttribute("newTraining", new Training());
         model.addAttribute("timeType", new FilterTypePeriods());
+        model.addAttribute("isEditOp", false);
         return "training";
     }
 
-    @RequestMapping(value = "/saveTraining", method = RequestMethod.GET)
-    public String saveTraining(Model model, @ModelAttribute("newTraining") Training training) {
-        trainRepo.save(training);
+    @RequestMapping(value = "/addTraining", method = RequestMethod.POST)
+    public String saveTraining(Model model, @ModelAttribute("newTraining") Training training, @RequestParam(value = "isEditOp", required = false) boolean isEditOp) {
+
+//        if(!isEditOp){
+//            model.addAttribute("trList",trainingService.getAllTrainings());
+//            model.addAttribute("newTraining", new Training());
+//            model.addAttribute("timeType", new FilterTypePeriods());
+//            model.addAttribute("isEditOp", false);
+//            return "training";
+//        }
+
+        trainingService.saveTraninig(training);
+        model.addAttribute("trList",trainingService.getAllTrainings());
+        model.addAttribute("newTraining", training);
+        model.addAttribute("timeType", new FilterTypePeriods());
+        model.addAttribute("isEditOp", isEditOp);
+
+        return "training";
+    }
+
+    @RequestMapping(value = "/removeTraining", method = RequestMethod.GET)
+    public String removeTraining(Model model, @RequestParam Long id){
+        trainingService.removeTraining(id);
         model.addAttribute("trList",trainingService.getAllTrainings());
         model.addAttribute("newTraining", new Training());
         model.addAttribute("timeType", new FilterTypePeriods());
-        return "redirect:/training";
+        model.addAttribute("isEditOp", false);
+        return "training";
+    }
+
+    @RequestMapping(value = "/editTraining", method = RequestMethod.GET)
+    public String editTraining(Model model, @RequestParam Long id){
+        Training training = trainingService.findTrainingById(id);
+
+        model.addAttribute("trList",trainingService.getAllTrainings());
+        model.addAttribute("newTraining", training);
+        model.addAttribute("timeType", new FilterTypePeriods());
+        model.addAttribute("isEditOp", true);
+        return "training";
     }
 
     @RequestMapping(value = "/filterTraining", method = RequestMethod.GET)
@@ -66,6 +95,7 @@ public class TrainingController {
         }
         model.addAttribute("newTraining", new Training());
         model.addAttribute("timeType", new FilterTypePeriods());
+        model.addAttribute("isEditOp", false);
         return "training";
     }
 

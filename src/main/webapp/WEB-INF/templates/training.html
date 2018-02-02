@@ -17,7 +17,7 @@
         <div id="addTrainingForm" class="card mx-auto mt-5 mb-5" style="display:none">
             <div class="card-header">Nový trénink</div>
             <div class="card-body">
-                <form method="GET" th:action="@{/saveTraining}" th:object="${newTraining}">
+                <form method="POST" th:action="@{/addTraining}" th:object="${newTraining}">
                     <div class="form-group">
                         <label for="inputTitle">Název</label>
                         <input class="form-control" th:field="*{title}" id="inputTitle" type="text"
@@ -60,6 +60,7 @@
                     </div>
                     <div class="mb-3">
                         <input type="submit" class="btn btn-primary btn-block" value="Vytvoř trénink"/>
+                        <input type="hidden" name="isEditOp" th:value="${isEditOp}"/>
                     </div>
                     <input class="btn btn-warning small" type="reset" value="Resetovat"/>
                 </form>
@@ -102,6 +103,8 @@
                             <th>Level</th>
                             <th>Trenér</th>
                             <th>Kapcita</th>
+                            <th style="width: 10px">Odstranit</th>
+                            <th style="width: 10px">Editovat</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -112,6 +115,8 @@
                             <th>Level</th>
                             <th>Trenér</th>
                             <th>Kapcita</th>
+                            <th>Odstranit</th>
+                            <th>Editovat</th>
                         </tr>
                         </tfoot>
                         <tbody th:each="tr : ${trList}">
@@ -122,6 +127,8 @@
                             <td th:text="${tr.trainingLevel}"></td>
                             <td th:text="${tr.coach}"></td>
                             <td th:text="${tr.capacity}">20</td>
+                            <td><a th:href="@{/removeTraining(id = ${tr.id})}">odstranit</a></td>
+                            <td><a th:href="@{/editTraining(id = ${tr.id})}">ediotovat</a></td>
                         </tr>
                         </tbody>
                     </table>
@@ -152,6 +159,16 @@
                 form.style.display = "none"
             }
         }
+
+//        function show2() {
+//            var myIn = document.getElementsByName("isEditOp");
+//            var form = document.getElementById("addTrainingForm");
+//            if(myIn.value == true){
+//                form.style.display = "block"
+//            } else {
+//                form.style.display = "none"
+//            }
+//        }
     </script>
 </div>
 </body>
