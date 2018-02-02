@@ -200,5 +200,10 @@ public class User {
     public void setRole(RoleTypes role) {
         this.role = role;
     }
-    //endregion
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	//endregion
 }

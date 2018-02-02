@@ -18,50 +18,62 @@
             </ol>
 
             <!-- Vložení uživatele FORMULÁŘ -->
-            <div id="addUserForm" style="display: block;" class="card card-login mx-auto mt-5">
+            <div id="addUserForm" style="display: block;" class="card mx-auto mt-5 mb-5">
                 <div class="card-header">Vytvoření uživatele</div>
                 <div class="card-body">
                     <form th:action="@{/addUser}" th:object="${userDto}" method="post">
                         <!--Basic information-->
                         <div class="form-group">
                             <div class="form-row">
-                                <div class="col-md-6">
+                                <div class="col-md-2">
                                     <label for="firstName">Jméno</label>
-                                    <input class="form-control" th:field="*{user.firstName}" id="firstName" type="text" name="firstName"
+                                    <input class="form-control" th:field="*{user.firstName}" id="firstName" type="text"
+                                           name="firstName"
                                            placeholder="Jméno"/>
-                                    <span class="validation" th:if="${#fields.hasErrors('user.firstName')}"  th:errors="*{user.firstName}"></span>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.firstName')}"
+                                          th:errors="*{user.firstName}"></span>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-2">
                                     <label for="lastName">Příjmení</label>
-                                    <input class="form-control" th:field="*{user.lastName}"  id="lastName" type="text" name="lastName"
+                                    <input class="form-control" th:field="*{user.lastName}" id="lastName" type="text"
+                                           name="lastName"
                                            placeholder="Příjmení"/>
-                                    <span class="validation" th:if="${#fields.hasErrors('user.lastName')}"  th:errors="*{user.lastName}"></span>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.lastName')}"
+                                          th:errors="*{user.lastName}"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="birthDate">Datum narození</label>
+                                    <input class="form-control" id="birthDate" th:field="*{user.bornDate}" type="date"
+                                           name="bornDate"
+                                           placeholder="Heslo"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.bornDate')}"
+                                          th:errors="*{user.bornDate}"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="birthDate">Datum narození</label>
-                            <input class="form-control" id="birthDate" th:field="*{user.bornDate}" type="date" name="bornDate"
-                                   placeholder="Heslo"/>
-                            <span class="validation" th:if="${#fields.hasErrors('user.bornDate')}"  th:errors="*{user.bornDate}"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">E-mail</label>
-                            <input class="form-control" id="email" th:field="*{user.email}" type="email" name="email"
-                                   placeholder="E-mail"/>
-                            <span class="validation" th:if="${#fields.hasErrors('user.email')}"  th:errors="*{user.email}"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="mobileNr">Telefon</label>
-                            <input class="form-control" id="mobileNr" th:field="*{user.tel}" type="tel" name="mobileNr"
-                                   placeholder="Telefon"/>
-                            <span class="validation" th:if="${#fields.hasErrors('user.tel')}"  th:errors="*{user.tel}"></span>
-                        </div>
-
-                        <!--Domain specific information-->
-                        <div class="form-group">
                             <div class="form-row">
-                                <div class="col-md-6">
+                                <div class="col-md-2">
+
+
+                                    <label for="email">E-mail</label>
+                                    <input class="form-control" id="email" th:field="*{user.email}" type="email"
+                                           name="email"
+                                           placeholder="E-mail"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.email')}"
+                                          th:errors="*{user.email}"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="mobileNr">Telefon</label>
+                                    <input class="form-control" id="mobileNr" th:field="*{user.tel}" type="tel"
+                                           name="mobileNr"
+                                           placeholder="Telefon"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.tel')}"
+                                          th:errors="*{user.tel}"></span>
+                                </div>
+
+                                <!--Domain specific information-->
+                                <div class="col-md-2">
                                     <label for="firstName">Role v tělocvičně</label>
                                     <select class="form-control" th:field="*{user.role}">
                                         <option th:each="role : ${T(cz.eshop.model.Types.RoleTypes).values()}"
@@ -73,22 +85,50 @@
                             </div>
                         </div>
                         
+                        <div th:if="${isEditOp}" class="form-group">
+                            <div class="form-row">
+                                <input type="hidden" th:field="*{user.id}" />
+                                <!--Domain specific information-->
+                                <div class="col-md-2">
+                                    <label for="belt">Barva pásku</label>
+                                    <select id="belt" class="form-control" th:field="*{user.role}">
+                                        <option th:each="role : ${T(cz.eshop.model.Types.BeltTypes).values()}"
+                                                th:value="${role}"
+                                                th:text="${role}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="stripe">Počet pruhů</label>
+                                    <input id="stripe" class="form-control" type="number" th:field="*{user.stripes}" />
+                                    <span class="validation" th:if="${#fields.hasErrors('user.stripes')}"
+                                          th:errors="*{user.stripe}"></span>
+                                </div>
+                                
+                            </div>
+                        </div>
+
                         <!--System security information-->
                         <div class="form-group">
                             <div class="form-row">
-                                <div class="col-md-6">
+                                <div class="col-md-2">
                                     <label for="username">Uživatelské jméno</label>
                                     <input class="form-control" id="username" th:field="*{user.username}" type="text"
                                            placeholder="Uživatelské jméno"/>
-                                    <span class="validation" th:if="${isUsernameUsed}" >Uživatelské jméno již existuje</span>
-                                    <span class="validation" th:if="${#fields.hasErrors('user.username')}"  th:errors="*{user.username}"></span>
+                                    <span class="validation"
+                                          th:if="${isUsernameUsed}">Uživatelské jméno již existuje</span>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.username')}"
+                                          th:errors="*{user.username}"></span>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-2">
                                     <label for="password">Heslo</label>
-                                    <input class="form-control" id="password" type="password" th:field="*{user.password}" placeholder="Heslo"/>
-                                    <span class="validation" th:if="${#fields.hasErrors('user.password')}"  th:errors="*{user.password}"></span>
+                                    <input class="form-control" id="password" type="text"
+                                           th:field="*{user.password}" placeholder="Heslo"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.password')}"
+                                          th:errors="*{user.password}"></span>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-2">
                                     <label for="password">Role v systému</label>
                                     <select class="form-control" th:field="*{authorities.authority}">
                                         <option th:each="authority : ${T(cz.eshop.model.AuthoritiesEnum).values()}"
@@ -98,13 +138,18 @@
                                     </select>
                                     <input type="hidden" th:field="*{authorities.authority}"/>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col-md-2">
                                     <label for="enabled">Povolen</label>
-                                    <input class="form-control" id="enabled" type="checkbox" value="Povolen" name="enabled" placeholder="Povolen"/>
+                                    <input id="enabled" type="checkbox" th:field="*{user.enabled}" value="Povolen"
+                                           name="enabled" placeholder="Povolen"/>
                                 </div>
                             </div>
                         </div>
-                        
+                                
                         <input type="submit" class="btn btn-primary btn-block" value="Uložit"/>
                         <input type="hidden" name="isEditOp" th:value="${isEditOp}"/>
                     </form>
@@ -121,7 +166,8 @@
                     <i class="fa fa-table"></i>Tabulka uživatelů
                 </div>
                 <div class="col-md-3">
-                    <button class="btn btn-primary btn-block" type="button" onClick="showForm()">Vložit uživatele</button>
+                    <button class="btn btn-primary btn-block" type="button" onClick="showForm()">Vložit uživatele
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

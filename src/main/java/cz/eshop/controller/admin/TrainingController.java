@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 public class TrainingController {
 
@@ -33,10 +31,4 @@ public class TrainingController {
         trainRepo.save(training);
         return "redirect:/training";
     }
-
-//    @RequestMapping(value = "/training", method = RequestMethod.GET)
-//    public String addTrainingPage(HttpServletRequest request, Model model){
-//        model.addAttribute("newTraining", new Training());
-//        return "addTraining";}
-
 }

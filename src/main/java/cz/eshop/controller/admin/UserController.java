@@ -38,15 +38,18 @@ public class UserController {
 				model.addAttribute("isUsernameUsed", true);
 				model.addAttribute("isEditOp", false);
 				return "user";
-			}	
+			} else {
+				userService.saveUser(userDto);
+			}
+		} else {
+			userService.editUser(userDto);
 		}
-
-		userService.saveUser(userDto);
+		
 		return prepareModel(model, userService.findAll(), new UserDto(), false);
 	}
 	
 
-	@RequestMapping(value = "/removeUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/removeUser", method = RequestMethod.POST)
 	public String remove(Model model, @RequestParam Long id) {
 		userService.removeUser(id);
 		model.addAttribute("userDto", new UserDto());
