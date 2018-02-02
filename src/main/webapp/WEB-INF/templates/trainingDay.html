@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.w3.org/1999/html">
+
+<head th:include="fragments::head" />
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" th:include="fragments::nav" />
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div id="addUserForm" style="display: none;" class="card mx-auto mt-5 mb-5">
+            <div class="card-header">Vytvoření uživatele</div>
+            <div class="card-body">
+                <form th:action="@{/registerUser}" th:object="${userDto}" method="post">
+                    <!--Basic information-->
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-2">
+                                <label for="firstName">Jméno</label>
+                                <input class="form-control" th:field="*{user.firstName}" id="firstName" type="text"
+                                       name="firstName"
+                                       placeholder="Jméno"/>
+                                <span class="validation" th:if="${#fields.hasErrors('user.firstName')}"
+                                      th:errors="*{user.firstName}"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="lastName">Příjmení</label>
+                                <input class="form-control" th:field="*{user.lastName}" id="lastName" type="text"
+                                       name="lastName"
+                                       placeholder="Příjmení"/>
+                                <span class="validation" th:if="${#fields.hasErrors('user.lastName')}"
+                                      th:errors="*{user.lastName}"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="birthDate">Datum narození</label>
+                                <input class="form-control" id="birthDate" th:field="*{user.bornDate}" type="date"
+                                       name="bornDate"
+                                       placeholder="Heslo"/>
+                                <span class="validation" th:if="${#fields.hasErrors('user.bornDate')}"
+                                      th:errors="*{user.bornDate}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-2">
+
+
+                                <label for="email">E-mail</label>
+                                <input class="form-control" id="email" th:field="*{user.email}" type="email"
+                                       name="email"
+                                       placeholder="E-mail"/>
+                                <span class="validation" th:if="${#fields.hasErrors('user.email')}"
+                                      th:errors="*{user.email}"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="mobileNr">Telefon</label>
+                                <input class="form-control" id="mobileNr" th:field="*{user.tel}" type="tel"
+                                       name="mobileNr"
+                                       placeholder="Telefon"/>
+                                <span class="validation" th:if="${#fields.hasErrors('user.tel')}"
+                                      th:errors="*{user.tel}"></span>
+                            </div>
+
+                            <!--Domain specific information-->
+                            <div class="col-md-2">
+                                <label for="firstName">Role v tělocvičně</label>
+                                <select class="form-control" th:field="*{user.role}">
+                                    <option th:each="role : ${T(cz.eshop.model.Types.RoleTypes).values()}"
+                                            th:value="${role}"
+                                            th:text="${role}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                        <div class="form-row">
+                            <input type="hidden" th:field="*{user.id}" />
+                            <!--Domain specific information-->
+                            <div class="col-md-2">
+                                <label for="belt">Barva pásku</label>
+                                <select id="belt" class="form-control" th:field="*{user.role}">
+                                    <option th:each="role : ${T(cz.eshop.model.Types.BeltTypes).values()}"
+                                            th:value="${role}"
+                                            th:text="${role}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label for="stripe">Počet pruhů</label>
+                                <input id="stripe" class="form-control" type="number" th:field="*{user.stripes}" />
+                                <span class="validation" th:if="${#fields.hasErrors('user.stripes')}"
+                                      th:errors="*{user.stripe}"></span>
+                            </div>
+
+                        </div>
+
+                    <!--System security information-->
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-2">
+                                <label for="username">Uživatelské jméno</label>
+                                <input class="form-control" id="username" th:field="*{user.username}" type="text"
+                                       placeholder="Uživatelské jméno"/>
+                                <span class="validation"
+                                      th:if="${isUsernameUsed}">Uživatelské jméno již existuje</span>
+                                <span class="validation" th:if="${#fields.hasErrors('user.username')}"
+                                      th:errors="*{user.username}"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="password">Heslo</label>
+                                <input class="form-control" id="password" type="text"
+                                       th:field="*{user.password}" placeholder="Heslo"/>
+                                <span class="validation" th:if="${#fields.hasErrors('user.password')}"
+                                      th:errors="*{user.password}"></span>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="password">Role v systému</label>
+                                <select class="form-control" th:field="*{authorities.authority}">
+                                    <option th:each="authority : ${T(cz.eshop.model.AuthoritiesEnum).values()}"
+                                            th:value="${authority}"
+                                            th:text="${authority}">
+                                    </option>
+                                </select>
+                                <input type="hidden" th:field="*{authorities.authority}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-md-2">
+                                <label for="enabled">Povolen</label>
+                                <input id="enabled" type="checkbox" th:field="*{user.enabled}" value="Povolen"
+                                       name="enabled" placeholder="Povolen"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary btn-block" value="Uložit"/>
+                </form>
+                <div class="text-center">
+                    <p class="validation" th:if="${errorMsg != null}" th:text="${errorMsg}"></p>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
+        
+        
+        <h1>Tréninkový den</h1>
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card text-white bg-warning o-hidden h-100">
+                    <button class="btn btn-secondary" onclick="showForm()">Zaevidovat nového člena</button>
+                </div>
+            </div>
+        </div>
+        <form th:action="@{/registerUsersAtt}" method="post">
+            <div class="row">
+                <div class="col-xl-3 col-sm-6 mb-3">
+                    <div class="card text-white bg-warning o-hidden h-100">
+                        <input type="submit" value="Potvrdit (placení)" class="btn btn-secondary" th:href="@{/addUser}"/>
+                    </div>
+                </div>
+            </div>
+            <div  class="col-xl-3 col-sm-6 mb-3"><span th:if="nobodyIsChecked" class="validation">Před placením je potřeba zaškrtnout zúčastněné uživatele</span></div>
+            <div class="card-mb-3">
+                <div class="col-xl-3 col-sm-6 mb-3">
+                    <table>
+                        <tbody>
+                        <div th:each="user: ${users}">
+                            <div th:if="!${showUsersInDebt}">
+                                <div class="card text-white bg-primary o-hidden h-100">
+                                    <div class="card-body">
+                                        <input style="font-style: oblique;" type="checkbox" id="present" name="present"
+                                               th:text="${user.firstName} + ' ' + ${user.lastName}" th:value="${user.id}" />
+                                    </div>
+                                </div>
+                                <p></p>
+                            </div>
+                            <div th:if="${showUsersInDebt}">
+                                <div class="card text-white bg-danger o-hidden h-100">
+                                    <div class="card-body">
+                                        <input style="font-style: oblique;" type="checkbox" id="present" name="present"
+                                               th:text="${user.firstName} + ' ' + ${user.lastName}" th:value="${user.id}" />
+                                    </div>
+                                </div>
+                                <p></p>
+                            </div>
+                        </div>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- /.container-fluid-->
+    <!-- /.content-wrapper-->
+    <!--Footer-->
+    <footer class="sticky-footer" id="myFooter" th:include="fragments::footer" />
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fa fa-angle-up"></i>
+    </a>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="login.html">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function showForm() {
+            var form = document.getElementById("addUserForm");
+            if (form.style.display == "none") {
+                form.style.display = "block"
+            } else {
+                form.style.display = "none"
+            }
+        }
+    </script>
+    <!-- Custom scripts for this page-->
+    <!--<script src="js/sb-admin-datatables.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>-->
+    <!--<script src="js/sb-admin-charts.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>-->
+</div>
+</body>
+
+</html>
