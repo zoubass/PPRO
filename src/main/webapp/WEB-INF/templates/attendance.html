@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="cs">
-<head th:include="fragments::head" />
+<head th:include="fragments::head"/>
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" th:include="fragments::nav" />
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" th:include="fragments::nav"/>
 <div class="content-wrapper">
     <div class="container-fluid">
         <!-- Breadcrumbs-->
@@ -16,40 +16,56 @@
 
         <div class="card mb-3">
             <!--Table Card Header-->
-            <div class="card-header">
-                <i class="fa fa-table"></i> Výpis docházky</div>
+            <div class="card-header form-row">
+                <div class="col-md-9">
+                    <i class="fa fa-table"></i> Výpis docházky
+                </div>
+                <div class="col-md-3" align="right">
+                    <form method="GET" th:action="@{/filterAttendance}" th:object="${timeType}">
+                        <label>Zobrazit: </label>
+                        <select th:field="*{types}">
+                            <option th:each="period:${T(cz.eshop.model.Types.FilterTypes).values()}"
+                                    th:value="${period}"
+                                    th:text="${period}">
+                            </option>
+                        </select>
+                        <input type="submit" class="btn btn-primary" value="OK"/>
+                    </form>
+                </div>
+            </div>
             <!--Table Card Body-->
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                    <table class="table table-bordered" id="trainingTable" width="100%" cellspacing="0"
+                           th:each="attData : ${attDataList}">
+                        <thead style="color: #005cbf; font-size: large">
                         <tr>
-                            <th>Uživatel</th>
-                            <th>Název</th>
-                            <th>Datum</th>
+                            <th th:text="${attData.training.title} + ' - ' +${attData.training.beginning}">
+                            </th>
                         </tr>
                         </thead>
-                        <tfoot>
+                        <tbody>
                         <tr>
-                            <th>Uživatel</th>
-                            <th>Název</th>
-                            <th>Datum</th>
-                        </tr>
-                        </tfoot>
-                        <tbody th:each = "att : ${attList}">
-                        <tr>
-                            <td th:text="${att.user.username}"></td>
-                            <td th:text="${att.training.title}"></td>
-                            <td th:text="${att.training.beginning}"></td>
+
+                            <table class="table table-bordered" id="attendanceTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>Účastník</th>
+                                    <th style="width: 10px">Odstranit</th>
+                                </tr>
+                                </thead>
+
+                                <tbody style="font-size: 14px" th:each="usr : ${attData.users}">
+                                <tr>
+                                    <td th:text="${usr.firstName} + ' ' + ${usr.lastName}"></td>
+                                    <td>
+                                        <a th:href="@{/removeAttendance(userId = ${usr.id}, trainId = ${attData.training.id})}">odstranit</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </tr>
                         </tbody>
-                        <!--<tbody>-->
-                        <!--<tr>-->
-                            <!--<td>Mišánek</td>-->
-                            <!--<td>Trénál</td>-->
-                            <!--<td>27.1.2017 19:30</td>-->
-                        <!--</tr>-->
-                        <!--</tbody>-->
                     </table>
                 </div>
             </div>
@@ -58,7 +74,7 @@
         </div>
 
         <!--Footer-->
-        <footer class="sticky-footer" id="myFooter" th:include="fragments::footer" />
+        <footer class="sticky-footer" id="myFooter" th:include="fragments::footer"/>
 
         <!-- Scroll to Top Button-->
         <a class="scroll-to-top rounded" href="#page-top">

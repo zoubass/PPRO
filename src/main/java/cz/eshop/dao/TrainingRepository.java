@@ -9,4 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface TrainingRepository extends CrudRepository<Training, Long> {
 
+    Training findById(@Param("id") Long training);
 }
