@@ -24,10 +24,10 @@ INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstN
 VALUES (NULL , 1, 1, 'strikac', 'strikac', 'Lukyn', 'Kebouz', 'lukyn@gmail.com', 0, 0, 777888999, DATE '1994-05-27', 1, 1);
 
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
-VALUES (NULL , NULL , 1, 'Mišánek', 'pass', 'Michal', 'Lapcaz', 'misanek@gmail.com', 0, 3, 111222333, TIMESTAMP '1994-02-01', 0, 0);
+VALUES (NULL , NULL , 2, 'Mišánek', 'pass', 'Michal', 'Lapcaz', 'misanek@gmail.com', 0, 3, 111222333, TIMESTAMP '1994-02-01', 0, 0);
 
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
-VALUES (1 , NULL , 2 , 'Dítě', 'pass', 'Josef', 'Smrádě', 'dite.com', 0, 1, 444555666, TIMESTAMP '2008-12-24', 3, 0);
+VALUES (1 , NULL , NULL , 'Dítě', 'pass', 'Josef', 'Smrádě', 'dite.com', 0, 1, 444555666, TIMESTAMP '2008-12-24', 3, 0);
 
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
 VALUES (NULL , 2 , NULL , 'Ninja', 'pass', 'John', 'Smith', 'ninja@gmail.com', 3, 1, 222555888, TIMESTAMP '1985-11-20', 2, 0);
