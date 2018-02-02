@@ -5,6 +5,7 @@ import cz.eshop.dao.TicketRepository;
 import cz.eshop.dao.UserRepository;
 import cz.eshop.model.Reminder;
 import cz.eshop.model.Ticket;
+import cz.eshop.model.Training;
 import cz.eshop.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,18 @@ public class ReminderService {
     private TicketRepository ticketRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AttendanceService attendanceService;
 
-    public List<User> doReminder(List<Long> userIdList) {
+    public List<User> doReminder(List<Long> userIdList, Training actualTraining) {
 
         List<User> reminders = new ArrayList<>();
         for (Long userId : userIdList) {
             User user = userRepository.findById(userId);
+
+            if (attendanceService.findAttendance(userId, actualTraining.getId()) != null)
+                continue;
+
             Ticket ticket = user.getTicket();
             Reminder reminder = user.getReminder();
 
