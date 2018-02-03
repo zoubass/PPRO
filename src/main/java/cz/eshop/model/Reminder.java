@@ -53,5 +53,9 @@ public class Reminder {
         this.startingDate = startingDate;
     }
 
-    //endregion
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	//endregion
 }

@@ -1,12 +1,17 @@
 package cz.eshop.service;
 
 import cz.eshop.dao.AuthoritiesRepository;
+import cz.eshop.dao.TicketRepository;
 import cz.eshop.dao.UserRepository;
 import cz.eshop.dto.UserDto;
+import cz.eshop.model.Reminder;
+import cz.eshop.model.Ticket;
 import cz.eshop.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -15,12 +20,16 @@ public class UserService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private TicketRepository ticketRepository;
+
+	@Autowired
 	private AuthoritiesRepository authoritiesRepository;
 
-	public void saveUser(UserDto userDto) {
+	public User saveUser(UserDto userDto) {
 		userDto.getAuthorities().setUsername(userDto.getUser().getUsername());
-		userRepository.save(userDto.getUser());
+		User user = userRepository.save(userDto.getUser());
 		authoritiesRepository.save(userDto.getAuthorities());
+		return user;
 	}
 
 	public Iterable<User> findAll() {
@@ -42,5 +51,30 @@ public class UserService {
 	@Transactional
 	public void editUser(UserDto userDto) {
 		userRepository.save(userDto.getUser());
+	}
+
+	public User saveNewlyRegisteredUser(UserDto userDto) {
+		User user = saveUser(userDto);
+
+		Ticket ticket = new Ticket();
+		ticket.setEntry(1);
+		ticket.setTimeTicket(false);
+
+		ticket = ticketRepository.save(ticket);
+
+		user.setTicket(ticket);
+		return user;
+	}
+
+	public List<User> findUsersWithReminder() {
+		return userRepository.findUserByReminderNotNull();
+	}
+
+	public Reminder findUsersReminder(String username) {
+		return userRepository.findByUsername(username).getReminder();
+	}
+
+	public Ticket findUsersTicket(String username) {
+		return userRepository.findByUsername(username).getTicket();
 	}
 }

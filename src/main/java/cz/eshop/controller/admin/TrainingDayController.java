@@ -54,7 +54,6 @@ public class TrainingDayController {
 
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("users", userService.findAll());
-			//			model.addAttribute("showUsersInDebt", false);
 			model.addAttribute("userDto", userDto);
 			return "trainingDay";
 		}
@@ -66,7 +65,7 @@ public class TrainingDayController {
 			return "trainingDay";
 		}
 
-		userService.saveUser(userDto);
+		userService.saveNewlyRegisteredUser(userDto);
 		model.addAttribute("users", userService.findAll());
 		model.addAttribute("userDto", new UserDto());
 		

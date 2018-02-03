@@ -34,10 +34,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="User info">
                 <a class="nav-link" th:href="@{/index}">
                     <i class="fa fa-fw fa-dashboard"></i>
-                    <span class="nav-link-text">Něco</span>
+                    <span class="nav-link-text">Informace o uživateli</span>
                 </a>
             </li>
             <!--<div sec:authorize="hasRole('ROLE_ADMIN')">-->
@@ -74,6 +74,13 @@
                 <a class="nav-link" th:href="@{/trainingDay}">
                     <i class="fa fa-fw fa-table"></i>
                     <span class="nav-link-text">Tréninkový den</span>
+                </a>
+            </li>
+
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Reminder">
+                <a class="nav-link" th:href="@{/reminder}">
+                    <i class="fa fa-fw fa-table"></i>
+                    <span class="nav-link-text">Upomínky</span>
                 </a>
             </li>
         </ul>
