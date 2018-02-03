@@ -60,6 +60,7 @@
                     </div>
                     <div class="mb-3">
                         <input type="submit" class="btn btn-primary btn-block" value="Vytvoř trénink"/>
+                        <input type="hidden" th:field="*{id}"/>
                         <input type="hidden" name="isEditOp" th:value="${isEditOp}"/>
                     </div>
                     <input class="btn btn-warning small" type="reset" value="Resetovat"/>
@@ -128,7 +129,7 @@
                             <td th:text="${tr.coach}"></td>
                             <td th:text="${tr.capacity}">20</td>
                             <td><a th:href="@{/removeTraining(id = ${tr.id})}">odstranit</a></td>
-                            <td><a th:href="@{/editTraining(id = ${tr.id})}">ediotovat</a></td>
+                            <td><a th:href="@{/editTraining(id = ${tr.id})}" >editovat</a></td>
                         </tr>
                         </tbody>
                     </table>

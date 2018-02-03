@@ -107,5 +107,9 @@ public class Training {
         this.note = note;
     }
 
-    //endregion
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	//endregion
 }

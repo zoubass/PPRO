@@ -22,10 +22,7 @@ public class TrainingController {
 
 	@RequestMapping(value = "/training", method = RequestMethod.GET)
 	public String getTraining(Model model) {
-
-		model.addAttribute("trList", trainingService.getAllTrainings());
-		model.addAttribute("newTraining", new Training());
-		model.addAttribute("timeType", new FilterTypePeriods());
+		prepareModel(model);
 		model.addAttribute("isEditOp", false);
 		return "training";
 	}
@@ -33,30 +30,26 @@ public class TrainingController {
 	@RequestMapping(value = "/addTraining", method = RequestMethod.POST)
 	public String saveTraining(Model model, @ModelAttribute("newTraining") Training training,
 			@RequestParam(value = "isEditOp", required = false) boolean isEditOp) {
-
-		//        if(!isEditOp){
-		//            model.addAttribute("trList",trainingService.getAllTrainings());
-		//            model.addAttribute("newTraining", new Training());
-		//            model.addAttribute("timeType", new FilterTypePeriods());
-		//            model.addAttribute("isEditOp", false);
-		//            return "training";
-		//        }
-
+		
 		trainingService.saveTraninig(training);
 		model.addAttribute("trList", trainingService.getAllTrainings());
-		model.addAttribute("newTraining", training);
+		model.addAttribute("newTraining", new Training());
 		model.addAttribute("timeType", new FilterTypePeriods());
-		model.addAttribute("isEditOp", isEditOp);
+		model.addAttribute("isEditOp", isEditOp ? false : isEditOp);
 
 		return "training";
+	}
+
+	private void prepareModel(Model model) {
+		model.addAttribute("trList", trainingService.getAllTrainings());
+		model.addAttribute("newTraining", new Training());
+		model.addAttribute("timeType", new FilterTypePeriods());
 	}
 
 	@RequestMapping(value = "/removeTraining", method = RequestMethod.GET)
 	public String removeTraining(Model model, @RequestParam Long id) {
 		trainingService.removeTraining(id);
-		model.addAttribute("trList", trainingService.getAllTrainings());
-		model.addAttribute("newTraining", new Training());
-		model.addAttribute("timeType", new FilterTypePeriods());
+		prepareModel(model);
 		model.addAttribute("isEditOp", false);
 		return "training";
 	}

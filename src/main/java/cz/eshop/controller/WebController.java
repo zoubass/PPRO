@@ -1,6 +1,7 @@
 package cz.eshop.controller;
 
-
+import cz.eshop.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -16,8 +17,17 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class WebController {
 
+	@Autowired
+	private UserService userService;
+
 	@RequestMapping(value = { "/index", "/" })
-	public String showHomePage(HttpServletRequest request, Model model) {
+	public String showHomePage(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		String username = auth.getName();
+
+		model.addAttribute("ticket", userService.findUsersTicket(username));
+		model.addAttribute("reminder", userService.findUsersReminder(username));
 		return "index";
 	}
 
@@ -50,11 +60,10 @@ public class WebController {
 		return "login";
 	}
 
-//    @RequestMapping(value = "/attendance", method = RequestMethod.GET)
-//    public String attendancePage(HttpServletRequest request, Model model){
-//        return "attendance";
-//    }
-
+	//    @RequestMapping(value = "/attendance", method = RequestMethod.GET)
+	//    public String attendancePage(HttpServletRequest request, Model model){
+	//        return "attendance";
+	//    }
 
 	@RequestMapping(value = "/loginAuth")
 	private String loginAuthentication() {

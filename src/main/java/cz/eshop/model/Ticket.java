@@ -70,5 +70,6 @@ public class Ticket {
         isTimeTicket = timeTicket;
     }
 
+    
     //endregion
 }
