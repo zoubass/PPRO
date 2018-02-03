@@ -29,9 +29,9 @@ public class User {
 	@NotNull
 	@Size(min = 3, max = 50)
 	private String email;
-	//TODO hodit do prazdneho constructoru
-	private BeltTypes belt = BeltTypes.WHITE;
-	private int stripes = StripeTypes.ZERO.Number();
+
+	private BeltTypes belt;
+	private int stripes;
 	@NotNull
 	@Size(min = 5, max = 20)
 	private String password;
@@ -54,6 +54,11 @@ public class User {
     @OneToOne
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
+
+    public User(){
+        this.belt = BeltTypes.WHITE;
+        this.stripes = StripeTypes.ZERO.Number();
+    }
 
     //region getters
     @NotNull

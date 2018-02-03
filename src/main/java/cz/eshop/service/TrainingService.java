@@ -18,6 +18,7 @@ public class TrainingService {
     private AttendanceRepository attendanceRepository;
 
     /**Returns list of all trainings*/
+    //TODO seřadit podle data (private Date ending) od nejnovějšího
     public List<Training> getAllTrainings(){
         return (List<Training>) trainingRepository.findAll();
     }

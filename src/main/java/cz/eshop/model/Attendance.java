@@ -21,6 +21,13 @@ public class Attendance {
     @JoinColumn(name = "training_id")
     private Training training;
 
+    public Attendance(){}
+
+    public Attendance(User user, Training training) {
+        this.user = user;
+        this.training = training;
+    }
+
     //region getters
 
     @NotNull
