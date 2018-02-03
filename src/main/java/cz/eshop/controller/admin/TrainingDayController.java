@@ -60,10 +60,12 @@ public class TrainingDayController {
 			model.addAttribute("showUsersInDebt", true);
 			model.addAttribute("userDto", new UserDto());
 			model.addAttribute("ticket", new Ticket());
+			model.addAttribute("style", "none");
 		} else {
 			model.addAttribute("users", userService.findAll());
 			model.addAttribute("userDto", new UserDto());
 			model.addAttribute("nobodyIsChecked", true);
+			model.addAttribute("style", "none");
 		}
 
 		return "trainingDay";
@@ -105,7 +107,7 @@ public class TrainingDayController {
 		usersInDebtCash.remove(id);
 
 		if (usersInDebtCash.isEmpty()) {
-			return "redirect:/web/training";
+			return "redirect:/web/attendance";
 		}
 
 		model.addAttribute("style", "none");

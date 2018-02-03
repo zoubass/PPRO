@@ -32,6 +32,16 @@ public class TrainingController {
 	public String saveTraining(Model model, @ModelAttribute("newTraining") Training training,
 			@RequestParam(value = "isEditOp", required = false) boolean isEditOp) {
 		
+		
+		if (!trainingService.isTrainingInOneDay(training)) {
+			model.addAttribute("trList", trainingService.getAllTrainings());
+			model.addAttribute("newTraining", training);
+			model.addAttribute("timeType", new FilterTypePeriods());
+			model.addAttribute("isEditOp", isEditOp);
+			model.addAttribute("datesError", true);
+			return "training";
+		}
+		
 		trainingService.saveTraninig(training);
 		model.addAttribute("trList", trainingService.getAllTrainings());
 		model.addAttribute("newTraining", new Training());

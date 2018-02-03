@@ -37,6 +37,7 @@
                                        type="datetime-local"
                                        aria-describedby="timeHelp" placeholder="Vlož čas"/>
                             </div>
+                            <span class="validation" th:if="${datesError}">Datumy začátku a konce tréninku musí být ve stejný den!</span>
                         </div>
                     </div>
                     <div class="form-group">
