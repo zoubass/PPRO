@@ -44,7 +44,7 @@ INSERT INTO trainings(title, beginning, ending, trainingLevel, coach, capacity, 
 VALUES ('Traning 3', TIMESTAMP '2018-01-31 19:30:00', TIMESTAMP '2018-01-31 21:00:00', 2, 'Jarda', 20, 'Tap tap');
 
 INSERT INTO trainings(title, beginning, ending, trainingLevel, coach, capacity, note)
-VALUES ('Traning 4', TIMESTAMP '2018-01-03 19:30:00', TIMESTAMP '2018-01-03 21:00:00', 2, 'Jarda', 20, 'Open mat');
+VALUES ('Traning 4', TIMESTAMP '2018-02-02 19:30:00', TIMESTAMP '2018-02-03 21:00:00', 2, 'Jarda', 20, 'Open mat');
 -- endregion
 
 -- region Attendance
