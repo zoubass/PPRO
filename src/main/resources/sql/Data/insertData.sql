@@ -21,16 +21,16 @@ VALUES (1, TIMESTAMP '2018-01-27');
 
 -- region Users
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
-VALUES (NULL , 1, 1, 'strikac', 'strikac', 'Lukyn', 'Kebouz', 'lukyn@gmail.com', 0, 0, 777888999, TIMESTAMP '1994-05-27', 1, 1);
+VALUES (NULL , 1, 1, 'admin', 'admin', 'Lukyn', 'Kebouz', 'lukyn@gmail.com', 0, 0, 777888999, TIMESTAMP '1994-05-27', 1, 1);
 
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
-VALUES (NULL , NULL , 2, 'Mišánek', 'password', 'Michal', 'Lapcaz', 'misanek@gmail.com', 0, 3, 111222333, TIMESTAMP '1994-02-01', 0, 0);
+VALUES (NULL , NULL , 2, 'trainer', 'trainer', 'Michal', 'Lapcaz', 'misanek@gmail.com', 0, 3, 111222333, TIMESTAMP '1994-02-01', 0, 0);
 
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
-VALUES (1 , NULL , NULL , 'Dítě', 'password', 'Josef', 'Smrádě', 'dite.com', 0, 1, 444555666, TIMESTAMP '2008-12-24', 3, 0);
+VALUES (1 , 2 , NULL , 'justuser', 'justuser', 'Josef', 'Smrádě', 'dite.com', 0, 1, 444555666, TIMESTAMP '2008-12-24', 3, 0);
 
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
-VALUES (NULL , 2 , NULL , 'Ninja', 'password', 'John', 'Smith', 'ninja@gmail.com', 3, 1, 222555888, TIMESTAMP '1985-11-20', 2, 0);
+VALUES (NULL , NULL , NULL , 'Ninja', 'password', 'John', 'Smith', 'ninja@gmail.com', 3, 1, 222555888, TIMESTAMP '1985-11-20', 2, 0);
 -- endregion
 
 -- region Trainings
@@ -59,7 +59,13 @@ VALUES (2, 2);
 
 -- endregion
 INSERT INTO authorities(username, authority) 
-values ('strikac', 'ROLE_ADMIN');
+values ('admin', 'ROLE_ADMIN');
+
+INSERT INTO authorities(username, authority) 
+values ('trainer', 'ROLE_TRAINER');
+
+INSERT INTO authorities(username, authority) 
+values ('justuser', 'ROLE_USER');
 
 --
 -- INSERT INTO authorities(fk_authorities_users, username, authority)
