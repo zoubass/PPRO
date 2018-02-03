@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,6 +26,9 @@ public class UserService {
 
 	@Autowired
 	private AuthoritiesRepository authoritiesRepository;
+	
+	@Autowired
+	private AttendanceService attendanceService;
 
 	public User saveUser(UserDto userDto) {
 		userDto.getAuthorities().setUsername(userDto.getUser().getUsername());
@@ -37,6 +42,7 @@ public class UserService {
 	}
 
 	public void removeUser(Long id) {
+		attendanceService.removeAttendance(userRepository.findById(id));
 		userRepository.delete(id);
 	}
 
@@ -76,5 +82,66 @@ public class UserService {
 
 	public Ticket findUsersTicket(String username) {
 		return userRepository.findByUsername(username).getTicket();
+	}
+
+	public Ticket assignTicketToUser(Long id, Ticket ticket, Integer timeTicketDuration, Integer entryCount) {
+		User user = findById(id);
+
+		if (ticket.isTimeTicket()) {
+			TimeRange timeRange = createTimeRangeForTicket(user, timeTicketDuration);
+
+			ticket.setStartingDate(timeRange.getStartingDate());
+			ticket.setEndingDate(timeRange.getEndingDate());
+		} else {
+			ticket.setEntry(entryCount);	
+		}
+
+		return ticket;
+	}
+
+	private TimeRange createTimeRangeForTicket(User user, Integer timeTicketDuration) {
+		Calendar calendar = Calendar.getInstance();
+		Date startingDate;
+
+		if (user.getReminder() != null) {
+			startingDate =
+					user.getReminder().getStartingDate() != null ? user.getReminder().getStartingDate() : new Date();
+		} else {
+			startingDate = new Date();
+		}
+
+		calendar.setTime(startingDate);
+		calendar.add(Calendar.DAY_OF_YEAR, timeTicketDuration);
+
+		return new TimeRange(startingDate, calendar.getTime());
+	}
+
+	/**
+	 * Helper method used to transfer whole date interval for the time ticket
+	 */
+	protected class TimeRange {
+		private Date startingDate;
+		private Date endingDate;
+
+		public TimeRange(Date startingDate, Date endingDate) {
+			this.startingDate = startingDate;
+			this.endingDate = endingDate;
+		}
+
+		public Date getStartingDate() {
+			return startingDate;
+		}
+
+		public void setStartingDate(Date startingDate) {
+			this.startingDate = startingDate;
+		}
+
+		public Date getEndingDate() {
+			return endingDate;
+		}
+
+		public void setEndingDate(Date endingDate) {
+			this.endingDate = endingDate;
+		}
 	}
 }

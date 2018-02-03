@@ -1,10 +1,10 @@
-package db;
+package cz.db;
 
+import cz.AbstractTest;
 import cz.eshop.dao.AuthoritiesRepository;
 import cz.eshop.dao.ReminderRepository;
 import cz.eshop.dao.TicketRepository;
 import cz.eshop.dao.UserRepository;
-import cz.eshop.model.Authorities;
 import cz.eshop.model.Reminder;
 import cz.eshop.model.Ticket;
 import cz.eshop.model.Types.BeltTypes;
@@ -12,19 +12,12 @@ import cz.eshop.model.Types.RoleTypes;
 import cz.eshop.model.User;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
 import java.util.List;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/META-INF/spring/application-context.xml")
-@ActiveProfiles("test")
-public class DatabaseTest {
+public class DatabaseTest extends AbstractTest{
 
     @Autowired
     private UserRepository userRepository;

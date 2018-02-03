@@ -19,5 +19,7 @@ public interface AttendanceRepository extends CrudRepository<Attendance, Long>{
     @Query("select A from Attendance A where A.training=:t and A.user=:u")
     Attendance filterByTrainingAndUser(@Param("t")Training t, @Param("u")User u);
 
+    void deleteByUser(@Param("user") User userId);
     //List<Attendance> findAllByTraining(@Param("training") Training training);
+	
 }

@@ -1,10 +1,9 @@
 package cz.eshop.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 @Entity
 @Table(name = "attendance")
@@ -15,7 +14,7 @@ public class Attendance {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+	private User user;
 
     @OneToOne
     @JoinColumn(name = "training_id")

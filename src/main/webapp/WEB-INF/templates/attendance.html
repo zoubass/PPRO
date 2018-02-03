@@ -21,7 +21,7 @@
                     <i class="fa fa-table"></i> Výpis docházky
                 </div>
                 <div class="col-md-3" align="right">
-                    <form method="GET" th:action="@{/filterAttendance}" th:object="${timeType}">
+                    <form method="GET" th:action="@{/web/filterAttendance}" th:object="${timeType}">
                         <label>Zobrazit: </label>
                         <select th:field="*{types}">
                             <option th:each="period:${T(cz.eshop.model.Types.FilterTypes).values()}"
@@ -59,7 +59,7 @@
                                 <tr>
                                     <td th:text="${usr.firstName} + ' ' + ${usr.lastName}"></td>
                                     <td>
-                                        <a th:href="@{/removeAttendance(userId = ${usr.id}, trainId = ${attData.training.id})}">odstranit</a>
+                                        <a th:href="@{/web/removeAttendance(userId = ${usr.id}, trainId = ${attData.training.id})}">odstranit</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -82,6 +82,23 @@
         </a>
     </div>
 
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Opravdu se chcete odhlásit?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Potvrdťe odhlášení kliknutím na tlačítko "Logout".</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Zrušit</button>
+                    <a class="btn btn-primary" th:href="@{/logout}" >Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Custom scripts for this page-->
     <script src="js/sb-admin-datatables.min.js"></script>
 </div>

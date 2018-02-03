@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 @Controller
+@RequestMapping("/web")
 public class TrainingController {
 
 	@Autowired

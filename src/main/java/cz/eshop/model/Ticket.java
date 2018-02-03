@@ -1,6 +1,6 @@
 package cz.eshop.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,67 +9,66 @@ import java.util.Date;
 @Entity
 @Table(name = "tickets")
 public class Ticket {
-    @Id
-    @GeneratedValue
-    private long id;
+	@Id
+	@GeneratedValue
+	private long id;
 
+	private int entry;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date startingDate;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date endingDate;
+	private boolean isTimeTicket;
 
-    private int entry;
-    private Date startingDate;
-    private Date endingDate;
-    private boolean isTimeTicket;
+	//region getters
 
-    //region getters
+	@NotNull
+	@Column(name = "ticket_id", nullable = false)
+	public long getId() {
+		return id;
+	}
 
-    @NotNull
-    @Column(name = "ticket_id", nullable = false)
-    public long getId() {
-        return id;
-    }
+	@NotNull
+	@Column(name = "endry")
+	public int getEntry() {
+		return entry;
+	}
 
+	@Column(name = "endingDate")
+	public Date getEndingDate() {
+		return endingDate;
+	}
 
-    @NotNull
-    @Column(name = "endry")
-    public int getEntry() {
-        return entry;
-    }
+	@Column(name = "startingDate")
+	public Date getStartingDate() {
+		return startingDate;
+	}
 
-    @Column(name = "endingDate")
-    public Date getEndingDate() {
-        return endingDate;
-    }
+	@NotNull
+	@Column(name = "isTimeTicket")
+	public boolean isTimeTicket() {
+		return isTimeTicket;
+	}
+	//endregion
 
-    @Column(name = "startingDate")
-    public Date getStartingDate() {
-        return startingDate;
-    }
+	//region setters
 
-    @NotNull
-    @Column(name = "isTimeTicket")
-    public boolean isTimeTicket() {
-        return isTimeTicket;
-    }
-    //endregion
+	public void setEntry(int entry) {
+		this.entry = entry;
+	}
 
+	public void setEndingDate(Date endingDate) {
+		this.endingDate = endingDate;
+	}
 
-    //region setters
+	public void setStartingDate(Date startingDate) {
+		this.startingDate = startingDate;
+	}
 
-    public void setEntry(int entry) {
-        this.entry = entry;
-    }
+	public void setTimeTicket(boolean timeTicket) {
+		isTimeTicket = timeTicket;
+	}
 
-    public void setEndingDate(Date endingDate) {
-        this.endingDate = endingDate;
-    }
-
-    public void setStartingDate(Date startingDate) {
-        this.startingDate = startingDate;
-    }
-
-    public void setTimeTicket(boolean timeTicket) {
-        isTimeTicket = timeTicket;
-    }
-
-    
-    //endregion
+	//endregion
 }

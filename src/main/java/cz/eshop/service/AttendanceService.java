@@ -45,6 +45,10 @@ public class AttendanceService {
     public void removeAttendance(Long userId, Long trainId){
         attRepo.delete(findAttendance(userId, trainId));
     }
+    
+    public void removeAttendance(User user){
+    	attRepo.deleteByUser(user);
+	}
 
     public Attendance findAttendance(Long userId, Long trainId){
         User user = userRepo.findById(userId);

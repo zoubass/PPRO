@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 
 @Controller
+@RequestMapping("/web")
 public class UserController {
 
 	@Autowired
@@ -49,9 +50,9 @@ public class UserController {
 	}
 	
 
-	@RequestMapping(value = "/removeUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/removeUser", method = RequestMethod.GET)
 	public String remove(Model model, @RequestParam Long id) {
-		userService.removeUser(id);
+			userService.removeUser(id);
 		model.addAttribute("userDto", new UserDto());
 		model.addAttribute("isEditOp", false);
 		model.addAttribute("users", userService.findAll());

@@ -21,7 +21,7 @@ VALUES (1, TIMESTAMP '2018-01-27');
 
 -- region Users
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
-VALUES (NULL , 1, 1, 'admin', 'admin', 'Lukyn', 'Kebouz', 'lukyn@gmail.com', 0, 0, 777888999, TIMESTAMP '1994-05-27', 1, 1);
+VALUES (NULL , NULL, 1, 'admin', 'admin', 'Lukyn', 'Kebouz', 'lukyn@gmail.com', 0, 0, 777888999, TIMESTAMP '1994-05-27', 1, 1);
 
 INSERT INTO users (parent_id, reminder_id, ticket_id, userName, password, firstName, lastName, email, belt, stripes, tel, bornDate, role, enabled)
 VALUES (NULL , NULL , 2, 'trainer', 'trainer', 'Michal', 'Lapcaz', 'misanek@gmail.com', 0, 3, 111222333, TIMESTAMP '1994-02-01', 0, 0);

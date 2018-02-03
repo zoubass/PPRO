@@ -14,10 +14,10 @@
             <li class="breadcrumb-item active">Trénink</li>
         </ol>
 
-        <div id="addTrainingForm" class="card mx-auto mt-5 mb-5" style="display:none">
+        <div id="addTrainingForm" class="card mx-auto mt-5 mb-5" style="display:block">
             <div class="card-header">Nový trénink</div>
             <div class="card-body">
-                <form method="POST" th:action="@{/addTraining}" th:object="${newTraining}">
+                <form method="POST" th:action="@{/web/addTraining}" th:object="${newTraining}">
                     <div class="form-group">
                         <label for="inputTitle">Název</label>
                         <input class="form-control" th:field="*{title}" id="inputTitle" type="text"
@@ -75,7 +75,7 @@
                     <div class="col-md-9">
                         <i class="fa fa-table"></i> Výpis tréninků
                         <div>
-                            <form method="GET" th:action="@{/filterTraining}" th:object="${timeType}">
+                            <form method="GET" th:action="@{/web/filterTraining}" th:object="${timeType}">
                                 <label>Zobrazit: </label>
                                 <select th:field="*{types}">
                                     <option th:each="period:${T(cz.eshop.model.Types.FilterTypes).values()}"
@@ -128,8 +128,8 @@
                             <td th:text="${tr.trainingLevel}"></td>
                             <td th:text="${tr.coach}"></td>
                             <td th:text="${tr.capacity}">20</td>
-                            <td><a th:href="@{/removeTraining(id = ${tr.id})}">odstranit</a></td>
-                            <td><a th:href="@{/editTraining(id = ${tr.id})}" >editovat</a></td>
+                            <td><a th:href="@{/web/removeTraining(id = ${tr.id})}">odstranit</a></td>
+                            <td><a th:href="@{/web/editTraining(id = ${tr.id})}" >editovat</a></td>
                         </tr>
                         </tbody>
                     </table>
@@ -148,18 +148,36 @@
         </a>
     </div>
 
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Opravdu se chcete odhlásit?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Potvrdťe odhlášení kliknutím na tlačítko "Logout".</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Zrušit</button>
+                    <a class="btn btn-primary" th:href="@{/logout}" >Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom scripts for this page-->
     <script src="js/sb-admin-datatables.min.js" th:src="@{js/sb-admin-datatables.min.js}"></script>
 
     <script type="text/javascript">
-        function showForm() {
-            var form = document.getElementById("addTrainingForm");
-            if (form.style.display == "none") {
-                form.style.display = "block"
-            } else {
-                form.style.display = "none"
-            }
-        }
+//        function showForm() {
+//            var form = document.getElementById("addTrainingForm");
+//            if (form.style.display == "none") {
+//                form.style.display = "block"
+//            } else {
+//                form.style.display = "none"
+//            }
+//        }
 
 //        function show2() {
 //            var myIn = document.getElementsByName("isEditOp");

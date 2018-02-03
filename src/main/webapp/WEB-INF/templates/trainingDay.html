@@ -8,10 +8,10 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" th:include="fragments::nav" />
 <div class="content-wrapper">
     <div class="container-fluid">
-        <div id="addUserForm" style="display: none;" class="card mx-auto mt-5 mb-5">
+        <div id="addUserForm"  th:attr="style='display: ' + ${style} + ';'" style="display: none;" class="card mx-auto mt-5 mb-5">
             <div class="card-header">Vytvoření uživatele</div>
             <div class="card-body">
-                <form th:action="@{/registerUser}" th:object="${userDto}" method="post">
+                <form th:action="@{/web/registerUser}" th:object="${userDto}" method="post">
                     <!--Basic information-->
                     <div class="form-group">
                         <div class="form-row">
@@ -159,15 +159,15 @@
                 </div>
             </div>
         </div>
-        <form th:action="@{/registerUsersAtt}" method="post">
+        <form th:action="@{/web/registerUsersAtt}" method="post">
             <div class="row">
                 <div class="col-xl-3 col-sm-6 mb-3">
                     <div class="card text-white bg-warning o-hidden h-100">
-                        <input type="submit" value="Potvrdit (placení)" class="btn btn-secondary" th:href="@{/addUser}"/>
+                        <input type="submit" value="Potvrdit (placení)" class="btn btn-secondary" th:href="@{/web/addUser}"/>
                     </div>
                 </div>
             </div>
-            <div  class="col-xl-3 col-sm-6 mb-3"><span th:if="nobodyIsChecked" class="validation">Před placením je potřeba zaškrtnout zúčastněné uživatele</span></div>
+            <div  class="col-xl-3 col-sm-6 mb-3"><span th:if="${nobodyIsChecked}" class="validation">Před placením je potřeba zaškrtnout alespoň jednoho zúčastněného</span></div>
             <div class="card-mb-3">
                 <div class="col-xl-3 col-sm-6 mb-3">
                     <table>
@@ -182,21 +182,67 @@
                                 </div>
                                 <p></p>
                             </div>
-                            <div th:if="${showUsersInDebt}">
-                                <div class="card text-white bg-danger o-hidden h-100">
-                                    <div class="card-body">
-                                        <input style="font-style: oblique;" type="checkbox" id="present" name="present"
-                                               th:text="${user.firstName} + ' ' + ${user.lastName}" th:value="${user.id}" />
-                                    </div>
-                                </div>
-                                <p></p>
-                            </div>
                         </div>
                         </tbody>
                     </table>
                 </div>
             </div>
         </form>
+        <div class="card-mb-3">
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <table>
+                    <tbody>
+                        <div th:each="user: ${users}">
+                                <div th:if="${showUsersInDebt}">
+                                    <div class="card text-white bg-danger o-hidden h-100">
+                                        <div class="card-body">
+                                            <label style="font-style: oblique;" type="checkbox" id="present" name="present"
+                                                   th:text="${user.firstName} + ' ' + ${user.lastName}" th:value="${user.id}" />
+                                        </div>
+                                        
+                                        
+                                        
+                                        <div th:if="${assignedTicket == null}">
+                                            <form th:if="${not #lists.isEmpty(users)}" th:action="@{/web/fillTicket}" th:object="${ticket}">
+                                                <div class="col-md-10">
+                                                    <label th:for="'isTimeTicketCheckbox' + ${user.id}">Časová permanentka</label>
+                                                    <input type="checkbox" th:id="'isTimeTicketCheckbox' + ${user.id}" name="timeTicket" th:attr="onclick='showContentByCheckBox(' + ${user.id} + ')'" th:field="*{timeTicket}" placeholder="Časová permanentka"/>
+                                                </div>
+                                                <div th:id="'timeTicketContent' + ${user.id}" style="display: none">
+                                                    <select name="timeTicketValue" class="form-control">
+                                                        <option value="7">Týden</option>
+                                                        <option value="30">Měsíc</option>
+                                                        <option value="180">6 měsíců</option>
+                                                    </select>
+                                                </div>
+                                                <div th:id="'entryTicketContent'  + ${user.id}">
+                                                    <!--<label for-->
+                                                    <select name="entryTicketValue" class="form-control">
+                                                        <option value="1">1 vstup</option>
+                                                        <option value="10">10 vstupů</option>
+                                                        <option value="30">30 vstupů</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <input type="hidden" name="userId" th:value="${user.id}"/>
+                                                <input class="btn btn-primary btn-block" style="background-color: white; color: black" type="submit" value="Potvrdit permanentku"/>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div th:if="${assignedTicket != null}">
+                                            <span th:text="${assignedTicket.startingDate}" />
+                                            <span th:text="${assignedTicket.endingDate}" />
+                                            <span th:text="${assignedTicket.entry}" />
+                                            <span th:text="${assignedTicket.timeTicket}" />
+                                    </div>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
     </div>
     <!-- /.container-fluid-->
     <!-- /.content-wrapper-->
@@ -212,15 +258,15 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Opravdu se chcete odhlásit?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">Potvrdťe odhlášení kliknutím na tlačítko "Logout".</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Zrušit</button>
+                    <a class="btn btn-primary" th:href="@{/logout}" >Logout</a>
                 </div>
             </div>
         </div>
@@ -233,6 +279,28 @@
             } else {
                 form.style.display = "none"
             }
+        }
+        
+        function showContentByCheckBox(userId) {
+            console.log(userId)
+            var isTimeTicket = document.getElementById("isTimeTicketCheckbox" + userId);
+            var timeTicketContent = document.getElementById("timeTicketContent" + userId);
+
+            var entryTicketContent = document.getElementById("entryTicketContent" + userId);
+            
+            console.log("I have been clicked");
+            
+            if (isTimeTicket.checked) {
+                timeTicketContent.style.display = "block";
+                entryTicketContent.style.display = "none";
+                
+            } else {
+                entryTicketContent.style.display = "block";
+                timeTicketContent.style.display = "none";
+                
+            }
+            
+            
         }
     </script>
     <!-- Custom scripts for this page-->
