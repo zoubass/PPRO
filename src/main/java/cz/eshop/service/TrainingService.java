@@ -100,8 +100,8 @@ public class TrainingService {
 		ending.setTime(training.getEnding());
 
 		return beginning.get(Calendar.DAY_OF_MONTH) == ending.get(Calendar.DAY_OF_MONTH)
-				&& beginning.get(Calendar.YEAR) == ending.get(Calendar.YEAR)
-				&& beginning.get(Calendar.MONTH) == ending.get(Calendar.MONTH);
+				&& beginning.get(Calendar.YEAR) == ending.get(Calendar.YEAR) && beginning.get(Calendar.MONTH) == ending
+				.get(Calendar.MONTH);
 	}
 
 }
