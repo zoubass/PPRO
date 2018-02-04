@@ -104,11 +104,17 @@ public class UserService {
 			ticket.setEntry(newEntry);
 		}
 		Ticket createdTicket = ticketRepository.save(ticket);
-		user.setReminder(null);
 		user.setTicket(createdTicket);
-		//TODO solve problem!!
-		reminderRepository.delete(user.getReminder().getId());
-
+		Long reminderId = user.getReminder()!= null? user.getReminder().getId():null;
+		
+		user.setReminder(null);
+		userRepository.save(user);
+		
+		if (reminderId != null) {
+			reminderRepository.delete(reminderId);	
+		}
+		
+		
 		return ticket;
 	}
 
