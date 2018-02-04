@@ -1,6 +1,7 @@
 package cz.eshop.service;
 
 import cz.eshop.dao.AuthoritiesRepository;
+import cz.eshop.dao.ReminderRepository;
 import cz.eshop.dao.TicketRepository;
 import cz.eshop.dao.UserRepository;
 import cz.eshop.dto.UserDto;
@@ -26,6 +27,9 @@ public class UserService {
 
 	@Autowired
 	private AuthoritiesRepository authoritiesRepository;
+
+	@Autowired
+	private ReminderRepository reminderRepository;
 	
 	@Autowired
 	private AttendanceService attendanceService;
@@ -93,8 +97,17 @@ public class UserService {
 			ticket.setStartingDate(timeRange.getStartingDate());
 			ticket.setEndingDate(timeRange.getEndingDate());
 		} else {
-			ticket.setEntry(entryCount);	
+			int newEntry = recountEntry(user, entryCount);
+			if(newEntry == 0)
+				return null;
+
+			ticket.setEntry(newEntry);
 		}
+		Ticket createdTicket = ticketRepository.save(ticket);
+		user.setReminder(null);
+		user.setTicket(createdTicket);
+		//TODO solve problem!!
+		reminderRepository.delete(user.getReminder().getId());
 
 		return ticket;
 	}
@@ -114,6 +127,18 @@ public class UserService {
 		calendar.add(Calendar.DAY_OF_YEAR, timeTicketDuration);
 
 		return new TimeRange(startingDate, calendar.getTime());
+	}
+
+	private int recountEntry(User user, Integer baseCount){
+		Reminder reminder = user.getReminder();
+		int rCount = baseCount - reminder.getReminderCount();
+		if(rCount < 0){
+			reminder.setReminderCount(rCount * (-1));
+			reminderRepository.save(reminder);
+			rCount = 0;
+		}
+
+		return rCount;
 	}
 
 	/**
