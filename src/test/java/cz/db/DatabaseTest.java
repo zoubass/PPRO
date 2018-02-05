@@ -40,6 +40,7 @@ public class DatabaseTest extends AbstractTest{
         user.setUsername("usernaaaame");
         user.setPassword("hesloheslo");
         user.setEnabled(true);
+        user.setFirstName("Prvn9UnitTest");
         user.setLastName("PosledniUnitTest");
         user.setParent(null);
         user.setRole(RoleTypes.ROLE_STRANGER);
@@ -53,15 +54,15 @@ public class DatabaseTest extends AbstractTest{
 
         userRepository.save(user);
 
-        List<User> userList = (List<User>) userRepository.findAll();
+        User resultUser = userRepository.findByUsername("usernaaaame");
 
-        Assert.assertEquals("usernaaaame", userList.get(0).getUsername());
+        Assert.assertEquals("usernaaaame", resultUser.getUsername());
     }
     
     @Test
 	public void testPopulatorInsertedUsers(){
     	List<User> users = (List<User>) userRepository.findAll();
-    	Assert.assertEquals(10, users.size());
+    	Assert.assertEquals(4, users.size());
 	}
 	
 	@Test
@@ -81,6 +82,7 @@ public class DatabaseTest extends AbstractTest{
 		userRepository.save(user);
 		
 		// zbývá otestovat, zda se smazal i tiket z tabulky tiket
+		//TODO: Takto to funguje aktualne, je potřeba aby ale prochazelo assertNull() .. potreba naimplementovat cascade
 		Assert.assertNotNull(ticketRepository.findOne(ticketId));
 	}
 }

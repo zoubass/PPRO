@@ -64,7 +64,6 @@ public class UserService {
 	}
 
 	public User saveNewlyRegisteredUser(UserDto userDto) {
-		User user = saveUser(userDto);
 
 		Ticket ticket = new Ticket();
 		ticket.setEntry(1);
@@ -72,7 +71,9 @@ public class UserService {
 
 		ticket = ticketRepository.save(ticket);
 
-		user.setTicket(ticket);
+		userDto.getUser().setTicket(ticket);
+		
+		User user = saveUser(userDto);
 		return user;
 	}
 
@@ -88,8 +89,17 @@ public class UserService {
 		return userRepository.findByUsername(username).getTicket();
 	}
 
-	public Ticket assignTicketToUser(Long id, Ticket ticket, Integer timeTicketDuration, Integer entryCount) {
-		User user = findById(id);
+	/**
+	 * Method serve to assign ticket to user. depending on the previous reminders user has had
+	 * 
+	 * @param userId - user id
+	 * @param ticket - used to determined ticket type (time | entry count)
+	 * @param timeTicketDuration - number of days the time ticket has to be set to
+	 * @param entryCount - number of entries the entry ticket has to be set to
+	 * @return
+	 */
+	public Ticket assignTicketToUser(Long userId, Ticket ticket, Integer timeTicketDuration, Integer entryCount) {
+		User user = findById(userId);
 
 		if (ticket.isTimeTicket()) {
 			TimeRange timeRange = createTimeRangeForTicket(user, timeTicketDuration);

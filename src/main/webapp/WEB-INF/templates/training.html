@@ -22,6 +22,8 @@
                         <label for="inputTitle">Název</label>
                         <input class="form-control" th:field="*{title}" id="inputTitle" type="text"
                                placeholder="Vlož název tréninku"/>
+                        <span class="validation" th:if="${#fields.hasErrors('title')}"
+                              th:errors="*{title}"></span>
                     </div>
                     <div class="form-group">
                         <div class="form-row">
@@ -30,12 +32,16 @@
                                 <input class="form-control" th:field="*{beginning}" id="inputStartDate"
                                        type="datetime-local"
                                        placeholder="Vlož datum"/>
+                                <span class="validation" th:if="${#fields.hasErrors('beginning')}"
+                                      th:errors="*{beginning}"></span>
                             </div>
                             <div class="col-md-6">
                                 <label for="inputTrainingTime">Konec tréninku</label>
                                 <input class="form-control" th:field="*{ending}" id="inputTrainingTime"
                                        type="datetime-local"
                                        aria-describedby="timeHelp" placeholder="Vlož čas"/>
+                                <span class="validation" th:if="${#fields.hasErrors('ending')}"
+                                      th:errors="*{ending}"></span>
                             </div>
                             <span class="validation" th:if="${datesError}">Datumy začátku a konce tréninku musí být ve stejný den!</span>
                         </div>
@@ -44,6 +50,8 @@
                         <label for="inputCoach">Trenér</label>
                         <input class="form-control" th:field="*{coach}" id="inputCoach" type="text"
                                placeholder="Vlož trénéra"/>
+                        <span class="validation" th:if="${#fields.hasErrors('coach')}"
+                              th:errors="*{coach}"></span>
                     </div>
                     <div class="form-group mb-4">
                         <div class="form-row">
@@ -51,11 +59,15 @@
                                 <label for="inputCapacity">Kapacita</label>
                                 <input class="form-control" th:field="*{capacity}" id="inputCapacity" type="number"
                                        placeholder="Vlož kapacitu tréninku"/>
+                                <span class="validation" th:if="${#fields.hasErrors('capacity')}"
+                                      th:errors="*{capacity}"></span>
                             </div>
                             <div class="col-md-6">
                                 <label for="inputLevel">Obtížnost</label>
                                 <input class="form-control" th:field="*{trainingLevel}" id="inputLevel" type="number"
                                        placeholder="Vlož obtížnost tréninku"/>
+                                <span class="validation" th:if="${#fields.hasErrors('trainingLevel')}"
+                                      th:errors="*{trainingLevel}"></span>
                             </div>
                         </div>
                     </div>

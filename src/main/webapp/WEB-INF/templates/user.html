@@ -21,7 +21,7 @@
             <div id="addUserForm" style="display: block;" class="card mx-auto mt-5 mb-5">
                 <div class="card-header">Vytvoření uživatele</div>
                 <div class="card-body">
-                    <form th:action="@{/web/addUser}" th:object="${userDto}" method="post">
+                    <form th:action="@{/web/addUser}" th:object="${userDto}" accept-charset="UTF-8" method="post">
                         <!--Basic information-->
                         <div class="form-group">
                             <div class="form-row">

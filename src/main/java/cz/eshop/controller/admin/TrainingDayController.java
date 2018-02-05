@@ -1,9 +1,7 @@
 package cz.eshop.controller.admin;
 
 import cz.eshop.dto.UserDto;
-import cz.eshop.model.Ticket;
-import cz.eshop.model.Training;
-import cz.eshop.model.User;
+import cz.eshop.model.*;
 import cz.eshop.service.AttendanceService;
 import cz.eshop.service.ReminderService;
 import cz.eshop.service.UserService;
@@ -32,7 +30,7 @@ public class TrainingDayController {
 	@Autowired
 	private AttendanceService attService;
 
-	private Map<Long, User> usersInDebtCash = new HashMap<>();
+	private Map<Long, User> usersInDebtCache = new HashMap<>();
 
 	@RequestMapping("/trainingDay")
 	public String trainingDayPreview(Model model) {
@@ -54,9 +52,9 @@ public class TrainingDayController {
 			List<User> userList = remService.doReminder(userIdsLong, actualTraining);
 			attService.writeDownAttByTime(userIdsLong, actualTraining);
 
-			usersInDebtCash = userList.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
+			usersInDebtCache = userList.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
 
-			model.addAttribute("users", usersInDebtCash.values());
+			model.addAttribute("users", usersInDebtCache.values());
 			model.addAttribute("showUsersInDebt", true);
 			model.addAttribute("userDto", new UserDto());
 			model.addAttribute("ticket", new Ticket());
@@ -74,13 +72,22 @@ public class TrainingDayController {
 	@RequestMapping("/registerUser")
 	public String registerNewUser(Model model, @ModelAttribute @Valid UserDto userDto, BindingResult bindingResult) {
 
+		if (userDto.getUser().getUsername() != null) {
+			Authorities authorities = new Authorities();
+			authorities.setUsername(userDto.getUser().getUsername());
+			authorities.setAuthority(AuthoritiesEnum.ROLE_USER);
+			
+			userDto.getUser().setEnabled(true);
+			userDto.setAuthorities(authorities);	
+		}
+		
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("users", userService.findAll());
 			model.addAttribute("userDto", userDto);
 			model.addAttribute("style", "block");
 			return "trainingDay";
 		}
-
+	
 		if (userService.isNotUniqueUsername(userDto)) {
 			model.addAttribute("users", userService.findAll());
 			model.addAttribute("userDto", userDto);
@@ -104,9 +111,9 @@ public class TrainingDayController {
 
 		Ticket assignedTicket = userService.assignTicketToUser(id, ticket, timeTicketValue, entryTicketValue);
 
-		usersInDebtCash.remove(id);
+		usersInDebtCache.remove(id);
 
-		if (usersInDebtCash.isEmpty()) {
+		if (usersInDebtCache.isEmpty()) {
 			return "redirect:/web/attendance";
 		}
 
@@ -114,7 +121,7 @@ public class TrainingDayController {
 		model.addAttribute("userDto", new UserDto());
 		//TODO: prepared to show the assignedTicket
 		//		model.addAttribute("assignedTicket", assignedTicket);
-		model.addAttribute("users", usersInDebtCash.values());
+		model.addAttribute("users", usersInDebtCache.values());
 		model.addAttribute("ticket", new Ticket());
 		model.addAttribute("showUsersInDebt", true);
 		return "trainingDay";

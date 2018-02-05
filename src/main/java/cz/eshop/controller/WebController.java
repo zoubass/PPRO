@@ -34,10 +34,11 @@ public class WebController {
 			return "redirect: /user";
 		} else if (authority.equals("ROLE_TRAINER")) {
 			return "redirect: /training";
+		} else {
+			model.addAttribute("ticket", userService.findUsersTicket(username));
+			model.addAttribute("reminder", userService.findUsersReminder(username));
+			return "index";
 		}
-		model.addAttribute("ticket", userService.findUsersTicket(username));
-		model.addAttribute("reminder", userService.findUsersReminder(username));
-		return "index";
 	}
 
 	@RequestMapping("/error")

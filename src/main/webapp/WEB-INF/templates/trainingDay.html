@@ -116,27 +116,28 @@
                                 <span class="validation" th:if="${#fields.hasErrors('user.password')}"
                                       th:errors="*{user.password}"></span>
                             </div>
-                            <div class="col-md-2">
-                                <label for="password">Role v systému</label>
-                                <select class="form-control" th:field="*{authorities.authority}">
-                                    <option th:each="authority : ${T(cz.eshop.model.AuthoritiesEnum).values()}"
-                                            th:value="${authority}"
-                                            th:text="${authority}">
-                                    </option>
-                                </select>
-                                <input type="hidden" th:field="*{authorities.authority}"/>
-                            </div>
+                            <!--<div class="col-md-2">-->
+                                <!--<label for="password">Role v systému</label>-->
+                                <!--<select class="form-control" th:field="*{authorities.authority}">-->
+                                    <!--&lt;!&ndash;<option th:each="authority : ${T(cz.eshop.model.AuthoritiesEnum).values()}"&ndash;&gt;-->
+                                            <!--&lt;!&ndash;th:value="${authority}"&ndash;&gt;-->
+                                            <!--&lt;!&ndash;th:text="${authority}">&ndash;&gt;-->
+                                        <!--<option th:value="${T(cz.eshop.model.AuthoritiesEnum).ROLE_USER}" th:text="${T(cz.eshop.model.AuthoritiesEnum).ROLE_USER}">-->
+                                    <!--</option>-->
+                                <!--</select>-->
+                                <!--<input type="hidden" th:field="*{authorities.authority}"/>-->
+                            <!--</div>-->
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="form-row">
-                            <div class="col-md-2">
-                                <label for="enabled">Povolen</label>
-                                <input id="enabled" type="checkbox" th:field="*{user.enabled}" value="Povolen"
-                                       name="enabled" placeholder="Povolen"/>
-                            </div>
-                        </div>
-                    </div>
+                    <!--<div class="form-group">-->
+                        <!--<div class="form-row">-->
+                            <!--<div class="col-md-2">-->
+                                <!--<label for="enabled">Povolen</label>-->
+                                <!--<input id="enabled" type="checkbox" th:field="*{user.enabled}" value="Povolen"-->
+                                       <!--name="enabled" placeholder="Povolen"/>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
 
                     <input type="submit" class="btn btn-primary btn-block" value="Uložit"/>
                 </form>

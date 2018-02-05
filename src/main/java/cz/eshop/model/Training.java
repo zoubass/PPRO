@@ -4,6 +4,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -13,12 +14,20 @@ public class Training {
     @GeneratedValue
     private long id;
 
+    @NotNull
+	@Size(min = 1)
     private String title;
+    @NotNull
     private Date beginning;
+    @NotNull
     private Date ending;
+    @NotNull
     private int trainingLevel;
+    @NotNull
     private String coach;
+    @NotNull
     private int capacity;
+    
     private String note;
 
 

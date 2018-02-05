@@ -6,11 +6,13 @@ import cz.eshop.service.TrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -29,17 +31,16 @@ public class TrainingController {
 	}
 
 	@RequestMapping(value = "/addTraining", method = RequestMethod.POST)
-	public String saveTraining(Model model, @ModelAttribute("newTraining") Training training,
+	public String saveTraining(Model model, @ModelAttribute("newTraining") @Valid Training training,
+			BindingResult bindingResult,
 			@RequestParam(value = "isEditOp", required = false) boolean isEditOp) {
 		
+		if (bindingResult.hasErrors()) {
+			return preapreModel(model, training, isEditOp);
+		}
 		
 		if (!trainingService.isTrainingInOneDay(training)) {
-			model.addAttribute("trList", trainingService.getAllTrainings());
-			model.addAttribute("newTraining", training);
-			model.addAttribute("timeType", new FilterTypePeriods());
-			model.addAttribute("isEditOp", isEditOp);
-			model.addAttribute("datesError", true);
-			return "training";
+			return preapreModel(model, training, isEditOp);
 		}
 		
 		trainingService.saveTraninig(training);
@@ -48,6 +49,16 @@ public class TrainingController {
 		model.addAttribute("timeType", new FilterTypePeriods());
 		model.addAttribute("isEditOp", isEditOp ? false : isEditOp);
 
+		return "training";
+	}
+
+	private String preapreModel(Model model, @ModelAttribute("newTraining") @Valid Training training,
+			@RequestParam(value = "isEditOp", required = false) boolean isEditOp) {
+		model.addAttribute("trList", trainingService.getAllTrainings());
+		model.addAttribute("newTraining", training);
+		model.addAttribute("timeType", new FilterTypePeriods());
+		model.addAttribute("isEditOp", isEditOp);
+		model.addAttribute("datesError", true);
 		return "training";
 	}
 
