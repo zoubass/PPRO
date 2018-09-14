@@ -5,6 +5,7 @@ import cz.eshop.dao.ReminderRepository;
 import cz.eshop.dao.TicketRepository;
 import cz.eshop.dao.UserRepository;
 import cz.eshop.dto.UserDto;
+import cz.eshop.model.Authorities;
 import cz.eshop.model.Reminder;
 import cz.eshop.model.Ticket;
 import cz.eshop.model.User;
@@ -61,6 +62,26 @@ public class UserService {
 	@Transactional
 	public void editUser(UserDto userDto) {
 		userRepository.save(userDto.getUser());
+		//TODO test if save authorities don't missing
+	}
+
+	/**
+	 * Method for editing users. Carry all attributes of DTO without null made by model
+	 * @param userDto - new DTO edited from form
+	 * @param prevUserDto - old DTO found in DB by ID
+	 */
+	@Transactional
+	public void editUser(UserDto userDto, UserDto prevUserDto){
+		User newUser = userDto.getUser();
+		newUser.setReminder(prevUserDto.getUser().getReminder());
+		newUser.setTicket(prevUserDto.getUser().getTicket());
+
+		Authorities newAuth = prevUserDto.getAuthorities();
+		newAuth.setAuthority(userDto.getAuthorities().getAuthority());
+
+		UserDto newUserDto = new UserDto(newUser, newAuth);
+		userRepository.save(newUserDto.getUser());
+		authoritiesRepository.save(newUserDto.getAuthorities());
 	}
 
 	public User saveNewlyRegisteredUser(UserDto userDto) {
@@ -88,6 +109,8 @@ public class UserService {
 	public Ticket findUsersTicket(String username) {
 		return userRepository.findByUsername(username).getTicket();
 	}
+
+	public List<User> findUsersWithTicket(){ return userRepository.findUsersByTicketNotNull(); }
 
 	/**
 	 * Method serve to assign ticket to user. depending on the previous reminders user has had

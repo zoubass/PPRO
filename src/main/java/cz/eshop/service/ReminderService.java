@@ -43,12 +43,21 @@ public class ReminderService {
                     continue;
 
                 user.setTicket(null);
+                userRepository.save(user);
                 ticketRepository.delete(ticket);
             }
             userRepository.save(checkReminder(reminder, user));
             reminders.add(user);
         }
         return reminders;
+    }
+
+    public void payReminder(User user){
+        User eddUser = user;
+        Long reminderId = eddUser.getReminder().getId();
+        eddUser.setReminder(null);
+        userRepository.save(eddUser);
+        reminderRepository.delete(reminderId);
     }
 
     private boolean isTicketValid(Ticket ticket) {

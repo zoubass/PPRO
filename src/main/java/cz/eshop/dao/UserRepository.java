@@ -15,4 +15,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	User findById(@Param("id") Long username);
 	
 	List<User> findUserByReminderNotNull();
+
+	List<User> findUsersByTicketNotNull();
 }

@@ -40,10 +40,16 @@ public class UserController {
 				model.addAttribute("isEditOp", false);
 				return "user";
 			} else {
+				//TODO test if save without null in reminders and tickets
 				userService.saveUser(userDto);
 			}
 		} else {
-			userService.editUser(userDto);
+			UserDto prevUserDto = new UserDto();
+			User prevUser = userService.findById(userDto.getUser().getId());
+			prevUserDto.setAuthorities(authoritiesService.findUserAuthority(userDto.getUser().getUsername()));
+			prevUserDto.setUser(prevUser);
+
+			userService.editUser(userDto, prevUserDto);
 		}
 		
 		return prepareModel(model, userService.findAll(), new UserDto(), false);

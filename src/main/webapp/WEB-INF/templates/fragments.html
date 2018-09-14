@@ -55,6 +55,12 @@
                                 <span class="nav-link-text">Správa uživatelů</span>
                             </a>
                         </li>
+                        <li>
+                            <a class="nav-link" th:href="@{/web/ticket}">
+                                <i class="fa fa-fw fa-gamepad"></i>
+                                <span class="nav-link-text">Správa permanentek</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </div>
@@ -68,13 +74,13 @@
                 </li>
             
 
-                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Training">
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Attendance">
                     <a class="nav-link" th:href="@{/web/attendance}">
                         <i class="fa fa-fw fa-file"></i>
                         <span class="nav-link-text">Docházka</span>
                     </a>
                 </li>
-                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Training">
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Training day">
                     <a class="nav-link" th:href="@{/web/trainingDay}">
                         <i class="fa fa-fw fa-area-chart"></i>
                         <span class="nav-link-text">Tréninkový den</span>
@@ -83,7 +89,7 @@
                 
                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Reminder">
                     <a class="nav-link" th:href="@{/web/reminder}">
-                        <i class="fa fa-fw fa-sitemap   "></i>
+                        <i class="fa fa-fw fa-ban"></i>
                         <span class="nav-link-text">Upomínky</span>
                     </a>
                 </li>

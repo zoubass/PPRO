@@ -12,13 +12,13 @@
             <!-- Breadcrumbs-->
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="#">Upomínky</a>
+                    <a href="#">Permanentky</a>
                 </li>
             </ol>
-            
+
             <div class="card mb-3">
                 <div class="card-header">
-                    <i class="fa fa-table"></i>Tabulka upomínek
+                    <i class="fa fa-table"></i>Tabulka parmanentek
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -27,27 +27,30 @@
                             <tr>
                                 <th>Jméno</th>
                                 <th>Příjmení</th>
-                                <th>Datum první upomínky</th>
-                                <th>Počet upomínek</th>
-                                <th>Uhradit</th>
+                                <th>Datum zakoupení</th>
+                                <th>Datum ukončení</th>
+                                <th>Počet zbývajícíh vstupů</th>
+                                <th>Odstanit</th>
                             </tr>
                             </thead>
                             <tfoot>
                             <tr>
                                 <th>Jméno</th>
                                 <th>Příjmení</th>
-                                <th>Datum první upomínky</th>
-                                <th>Počet upomínek</th>
-                                <th>Uhradit</th>
+                                <th>Datum zakoupení</th>
+                                <th>Datum ukončení</th>
+                                <th>Počet zbývajícíh vstupů</th>
+                                <th>Odstanit</th>
                             </tr>
                             </tfoot>
                             <tbody>
-                            <tr th:each="user: ${remindedUsers}">
+                            <tr th:each="user: ${usersTicket}">
                                 <td th:text="${user.firstName}">Jméno</td>
                                 <td th:text="${user.lastName}">Příjmení</td>
-                                <td th:text="${user.reminder.startingDate}">Datum první úpomínky</td>
-                                <td th:text="${user.reminder.reminderCount}">Počet upomínek</td>
-                                <td><a th:href="@{/web/payReminder(userId = ${user.id})}">Uhradit</a></td>
+                                <td th:text="${user.ticket.startingDate}">Datum zakoupení</td>
+                                <td th:text="${user.ticket.endingDate}">Datum ukončení</td>
+                                <td th:text="${user.ticket.entry}">Počet zbývajících vstupů</td>
+                                <td><a th:href="@{/web/removeTicket(userId = ${user.id})}">odstanit</a></td>
                             </tr>
                             </tbody>
                         </table>
