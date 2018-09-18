@@ -20,192 +20,203 @@ import java.util.List;
 @Service
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	@Autowired
-	private TicketRepository ticketRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
 
-	@Autowired
-	private AuthoritiesRepository authoritiesRepository;
+    @Autowired
+    private AuthoritiesRepository authoritiesRepository;
 
-	@Autowired
-	private ReminderRepository reminderRepository;
-	
-	@Autowired
-	private AttendanceService attendanceService;
+    @Autowired
+    private ReminderRepository reminderRepository;
 
-	public User saveUser(UserDto userDto) {
-		userDto.getAuthorities().setUsername(userDto.getUser().getUsername());
-		User user = userRepository.save(userDto.getUser());
-		authoritiesRepository.save(userDto.getAuthorities());
-		return user;
-	}
+    @Autowired
+    private AttendanceService attendanceService;
 
-	public Iterable<User> findAll() {
-		return userRepository.findAll();
-	}
+    public User saveUser(UserDto userDto) {
+        userDto.getAuthorities().setUsername(userDto.getUser().getUsername());
+        User user = userRepository.save(userDto.getUser());
+        authoritiesRepository.save(userDto.getAuthorities());
+        return user;
+    }
 
-	public void removeUser(Long id) {
-		attendanceService.removeAttendance(userRepository.findById(id));
-		userRepository.delete(id);
-	}
+    public Iterable<User> findAll() {
+        return userRepository.findAll();
+    }
 
-	public boolean isNotUniqueUsername(UserDto userDto) {
-		return userRepository.findByUsername(userDto.getUser().getUsername()) != null;
-	}
+    public void removeUser(Long id) {
+        attendanceService.removeAttendance(userRepository.findById(id));
+        userRepository.delete(id);
+    }
 
-	public User findById(Long id) {
-		return userRepository.findById(id);
-	}
+    public boolean isNotUniqueUsername(UserDto userDto) {
+        return userRepository.findByUsername(userDto.getUser().getUsername()) != null;
+    }
 
-	@Transactional
-	public void editUser(UserDto userDto) {
-		userRepository.save(userDto.getUser());
-		//TODO test if save authorities don't missing
-	}
+    public User findById(Long id) {
+        return userRepository.findById(id);
+    }
 
-	/**
-	 * Method for editing users. Carry all attributes of DTO without null made by model
-	 * @param userDto - new DTO edited from form
-	 * @param prevUserDto - old DTO found in DB by ID
-	 */
-	@Transactional
-	public void editUser(UserDto userDto, UserDto prevUserDto){
-		User newUser = userDto.getUser();
-		newUser.setReminder(prevUserDto.getUser().getReminder());
-		newUser.setTicket(prevUserDto.getUser().getTicket());
+    @Transactional
+    public void editUser(UserDto userDto) {
+        userRepository.save(userDto.getUser());
+        //TODO test if save authorities don't missing
+    }
 
-		Authorities newAuth = prevUserDto.getAuthorities();
-		newAuth.setAuthority(userDto.getAuthorities().getAuthority());
+    /**
+     * Method for editing users. Carry all attributes of DTO without null made by model
+     *
+     * @param userDto     - new DTO edited from form
+     * @param prevUserDto - old DTO found in DB by ID
+     */
+    @Transactional
+    public void editUser(UserDto userDto, UserDto prevUserDto) {
+        User newUser = userDto.getUser();
+        newUser.setReminder(prevUserDto.getUser().getReminder());
+        newUser.setTicket(prevUserDto.getUser().getTicket());
 
-		UserDto newUserDto = new UserDto(newUser, newAuth);
-		userRepository.save(newUserDto.getUser());
-		authoritiesRepository.save(newUserDto.getAuthorities());
-	}
+        Authorities newAuth = prevUserDto.getAuthorities();
+        newAuth.setAuthority(userDto.getAuthorities().getAuthority());
 
-	public User saveNewlyRegisteredUser(UserDto userDto) {
+        UserDto newUserDto = new UserDto(newUser, newAuth);
+        userRepository.save(newUserDto.getUser());
+        authoritiesRepository.save(newUserDto.getAuthorities());
+    }
 
-		Ticket ticket = new Ticket();
-		ticket.setEntry(1);
-		ticket.setTimeTicket(false);
+    public User saveNewlyRegisteredUser(UserDto userDto) {
 
-		ticket = ticketRepository.save(ticket);
+        Ticket ticket = new Ticket();
+        ticket.setEntry(1);
+        ticket.setTimeTicket(false);
 
-		userDto.getUser().setTicket(ticket);
-		
-		User user = saveUser(userDto);
-		return user;
-	}
+        ticket = ticketRepository.save(ticket);
 
-	public List<User> findUsersWithReminder() {
-		return userRepository.findUserByReminderNotNull();
-	}
+        userDto.getUser().setTicket(ticket);
 
-	public Reminder findUsersReminder(String username) {
-		return userRepository.findByUsername(username).getReminder();
-	}
+        User user = saveUser(userDto);
+        return user;
+    }
 
-	public Ticket findUsersTicket(String username) {
-		return userRepository.findByUsername(username).getTicket();
-	}
+    public List<User> findUsersWithReminder() {
+        return userRepository.findUserByReminderNotNull();
+    }
 
-	public List<User> findUsersWithTicket(){ return userRepository.findUsersByTicketNotNull(); }
+    public Reminder findUsersReminder(String username) {
+        return userRepository.findByUsername(username).getReminder();
+    }
 
-	/**
-	 * Method serve to assign ticket to user. depending on the previous reminders user has had
-	 * 
-	 * @param userId - user id
-	 * @param ticket - used to determined ticket type (time | entry count)
-	 * @param timeTicketDuration - number of days the time ticket has to be set to
-	 * @param entryCount - number of entries the entry ticket has to be set to
-	 * @return
-	 */
-	public Ticket assignTicketToUser(Long userId, Ticket ticket, Integer timeTicketDuration, Integer entryCount) {
-		User user = findById(userId);
+    public Ticket findUsersTicket(String username) {
+        return userRepository.findByUsername(username).getTicket();
+    }
 
-		if (ticket.isTimeTicket()) {
-			TimeRange timeRange = createTimeRangeForTicket(user, timeTicketDuration);
+    public List<User> findUsersWithTicket() {
+        return userRepository.findUsersByTicketNotNull();
+    }
 
-			ticket.setStartingDate(timeRange.getStartingDate());
-			ticket.setEndingDate(timeRange.getEndingDate());
-		} else {
-			int newEntry = recountEntry(user, entryCount);
-			if(newEntry == 0)
-				return null;
+    /**
+     * Method serve to assign ticket to user. depending on the previous reminders user has had
+     *
+     * @param userId             - user id
+     * @param ticket             - used to determined ticket type (time | entry count)
+     * @param timeTicketDuration - number of days the time ticket has to be set to
+     * @param entryCount         - number of entries the entry ticket has to be set to
+     * @return
+     */
+    public Ticket assignTicketToUser(Long userId, Ticket ticket, Integer timeTicketDuration, Integer entryCount) {
+        User user = findById(userId);
 
-			ticket.setEntry(newEntry);
-		}
-		Ticket createdTicket = ticketRepository.save(ticket);
-		user.setTicket(createdTicket);
-		Long reminderId = user.getReminder()!= null? user.getReminder().getId():null;
-		
-		user.setReminder(null);
-		userRepository.save(user);
-		
-		if (reminderId != null) {
-			reminderRepository.delete(reminderId);	
-		}
-		
-		
-		return ticket;
-	}
+        if (ticket.isTimeTicket()) {
+            TimeRange timeRange = createTimeRangeForTicket(user, timeTicketDuration);
 
-	private TimeRange createTimeRangeForTicket(User user, Integer timeTicketDuration) {
-		Calendar calendar = Calendar.getInstance();
-		Date startingDate;
+            ticket.setStartingDate(timeRange.getStartingDate());
+            ticket.setEndingDate(timeRange.getEndingDate());
+        } else {
+            int newEntry = recountEntry(user, entryCount);
+            if (newEntry == 0)
+                return null;
 
-		if (user.getReminder() != null) {
-			startingDate =
-					user.getReminder().getStartingDate() != null ? user.getReminder().getStartingDate() : new Date();
-		} else {
-			startingDate = new Date();
-		}
+            ticket.setEntry(newEntry);
+        }
+        Ticket createdTicket = ticketRepository.save(ticket);
+        user.setTicket(createdTicket);
+        Long reminderId = user.getReminder() != null ? user.getReminder().getId() : null;
 
-		calendar.setTime(startingDate);
-		calendar.add(Calendar.DAY_OF_YEAR, timeTicketDuration);
+        user.setReminder(null);
+        userRepository.save(user);
 
-		return new TimeRange(startingDate, calendar.getTime());
-	}
+        if (reminderId != null) {
+            reminderRepository.delete(reminderId);
+        }
 
-	private int recountEntry(User user, Integer baseCount){
-		Reminder reminder = user.getReminder();
-		int rCount = baseCount - reminder.getReminderCount();
-		if(rCount < 0){
-			reminder.setReminderCount(rCount * (-1));
-			reminderRepository.save(reminder);
-			rCount = 0;
-		}
 
-		return rCount;
-	}
+        return ticket;
+    }
 
-	/**
-	 * Helper method used to transfer whole date interval for the time ticket
-	 */
-	protected class TimeRange {
-		private Date startingDate;
-		private Date endingDate;
+    public List<User> searchUser(String name) {
+        return userRepository.getUsersByNameWithoutTicket(name);
+    }
 
-		public TimeRange(Date startingDate, Date endingDate) {
-			this.startingDate = startingDate;
-			this.endingDate = endingDate;
-		}
+    public List<User> filterUsers(String name) {
+        return userRepository.getUsersByNameWithTicket(name);
+    }
 
-		public Date getStartingDate() {
-			return startingDate;
-		}
+    private TimeRange createTimeRangeForTicket(User user, Integer timeTicketDuration) {
+        Calendar calendar = Calendar.getInstance();
+        Date startingDate;
 
-		public void setStartingDate(Date startingDate) {
-			this.startingDate = startingDate;
-		}
+        if (user.getReminder() != null) {
+            startingDate =
+                    user.getReminder().getStartingDate() != null ? user.getReminder().getStartingDate() : new Date();
+        } else {
+            startingDate = new Date();
+        }
 
-		public Date getEndingDate() {
-			return endingDate;
-		}
+        calendar.setTime(startingDate);
+        calendar.add(Calendar.DAY_OF_YEAR, timeTicketDuration);
 
-		public void setEndingDate(Date endingDate) {
-			this.endingDate = endingDate;
-		}
-	}
+        return new TimeRange(startingDate, calendar.getTime());
+    }
+
+    private int recountEntry(User user, Integer baseCount) {
+        Reminder reminder = user.getReminder();
+        int rCount = baseCount - reminder.getReminderCount();
+        if (rCount < 0) {
+            reminder.setReminderCount(rCount * (-1));
+            reminderRepository.save(reminder);
+            rCount = 0;
+        }
+
+        return rCount;
+    }
+
+    /**
+     * Helper method used to transfer whole date interval for the time ticket
+     */
+    protected class TimeRange {
+        private Date startingDate;
+        private Date endingDate;
+
+        public TimeRange(Date startingDate, Date endingDate) {
+            this.startingDate = startingDate;
+            this.endingDate = endingDate;
+        }
+
+        public Date getStartingDate() {
+            return startingDate;
+        }
+
+        public void setStartingDate(Date startingDate) {
+            this.startingDate = startingDate;
+        }
+
+        public Date getEndingDate() {
+            return endingDate;
+        }
+
+        public void setEndingDate(Date endingDate) {
+            this.endingDate = endingDate;
+        }
+    }
 }

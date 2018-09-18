@@ -12,13 +12,116 @@
             <!-- Breadcrumbs-->
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="#">Permanentky</a>
+                    <a href="index.html">Home</a>
                 </li>
+                <li class="breadcrumb-item active">Permanentky</li>
             </ol>
+
+            <div id="addTicketForm" class="card mx-auto mt-5 mb-5" style="display:block">
+                <div class="card-header">Nová permanentka</div>
+                <div class="card-body">
+                    <form method="POST" th:action="@{/web/searchUsers}" th:object="${findingUser}"
+                          accept-charset="UTF-8">
+                        <label for="inputFirstName">Vyhledávání</label>
+                        <div class="form-row">
+                            <div class="col-md-4">
+                                <input class="form-control" th:field="*{firstName}" id="inputFirstName" type="text"
+                                       placeholder="Vzhledej uživatele"/>
+                                <!--<span class="validation" th:if="${#fields.hasErrors('firstName')}"-->
+                                <!--th:errors="*{firstName}"></span>-->
+                            </div>
+                            <div class="col-mb-6">
+                                <input type="submit" class="btn btn-primary btn-block" value="OK"/>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fa fa-table"></i>Vyhledávání
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataSearchTable" width="100%"
+                                       cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Jméno</th>
+                                        <th>Příjmení</th>
+                                        <th>Časová permanentka</th>
+                                        <th>Typ</th>
+                                        <th>Přidat</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="user: ${usersSearch}">
+                                        <form th:action="@{/web/addTicket}" method="post">
+                                            <td th:text="${user.firstName}">Jméno</td>
+                                            <td th:text="${user.lastName}">Příjmení</td>
+                                            <td><input type="checkbox" th:id="'isTimeTicketChecked' + ${user.id}"
+                                                       name="timeTicket"
+                                                       th:attr="onclick='showTicketTypeContent(' + ${user.id} + ')'"
+                                                       placeholder="Typ permanentky"/></td>
+                                            <td>
+                                                <div th:id="'isTimeTicket' + ${user.id}" style="display: none">
+                                                    <select name="timeTicketValue" class="form-control">
+                                                        <option th:each="timeType : ${T(cz.eshop.model.Types.TicketTimeTypes).values()}"
+                                                                th:value="${timeType}"
+                                                                th:text="${timeType}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div th:id="'isPointTicket' + ${user.id}" style="display: block">
+                                                    <select name="pointTicketValue" class="form-control">
+                                                        <option th:each="pointType : ${T(cz.eshop.model.Types.TicketPointTypes).values()}"
+                                                                th:value="${pointType}"
+                                                                th:text="${pointType}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <!--<td><a th:href="@{/web/addTicket(userId = ${user.id})}">OK</a></td>-->
+                                            <td>
+                                                <input type="hidden" name="userId" th:value="${user.id}"/>
+                                                <input class="btn btn-primary btn-block" type="submit" value="OK"/>
+                                            </td>
+                                        </form>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<input class="btn btn-warning small" type="reset" value="Resetovat"/>-->
+                </div>
+            </div>
 
             <div class="card mb-3">
                 <div class="card-header">
-                    <i class="fa fa-table"></i>Tabulka parmanentek
+                    <div class="form-row">
+                        <div class="col-md-9">
+                            <i class="fa fa-table"></i>Tabulka parmanentek
+                            <div>
+                                <form method="GET" th:action="@{/web/filterTicket}" th:object="${filteredUser}">
+                                    <div class="form-row">
+                                        <div class="col-md-5">
+                                            <input class="form-control" th:field="*{firstName}"
+                                                   id="inputFilterFirstName" type="text"
+                                                   placeholder="Vyhledej uživatele"/>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="submit" class="btn btn-primary" value="OK"/>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary btn-block" type="button" onclick="showNewTicketForm()">
+                                Přidat
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -73,7 +176,8 @@
         <i class="fa fa-angle-up"></i>
     </a>
     <!-- Logout Modal-->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -85,7 +189,7 @@
                 <div class="modal-body">Potvrdťe odhlášení kliknutím na tlačítko "Logout".</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Zrušit</button>
-                    <a class="btn btn-primary" th:href="@{/logout}" >Logout</a>
+                    <a class="btn btn-primary" th:href="@{/logout}">Logout</a>
                 </div>
             </div>
         </div>
@@ -105,6 +209,33 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin.min.js" th:src="@{/js/sb-admin.min.js}"></script>
     <!-- Custom scripts for this page-->
+
+    <script type="text/javascript">
+        function showNewTicketForm() {
+            var form = document.getElementById("addTicketForm");
+            if (form.style.display == "none") {
+                form.style.display = "block"
+            } else {
+                form.style.display = "none"
+            }
+        }
+
+        function showTicketTypeContent(userId) {
+            console.log(userId)
+            var isTimeTicketChecked = document.getElementById("isTimeTicketChecked" + userId);
+            var timeTicket = document.getElementById("isTimeTicket" + userId);
+            var pointTicket = document.getElementById("isPointTicket" + userId);
+
+            if (isTimeTicketChecked.checked) {
+                timeTicket.style.display = "block";
+                pointTicket.style.display = "none";
+            } else {
+                timeTicket.style.display = "none";
+                pointTicket.style.display = "block";
+            }
+        }
+
+    </script>
 
 </div>
 </body>

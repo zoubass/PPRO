@@ -9,9 +9,8 @@
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="index.html">Home</a>
+                <a href="#">Trénink</a>
             </li>
-            <li class="breadcrumb-item active">Trénink</li>
         </ol>
 
         <div id="addTrainingForm" class="card mx-auto mt-5 mb-5" style="display:block">
@@ -142,7 +141,7 @@
                             <td th:text="${tr.coach}"></td>
                             <td th:text="${tr.capacity}">20</td>
                             <td><a th:href="@{/web/removeTraining(id = ${tr.id})}">odstranit</a></td>
-                            <td><a th:href="@{/web/editTraining(id = ${tr.id})}" >editovat</a></td>
+                            <td><a th:href="@{/web/editTraining(id = ${tr.id})}">editovat</a></td>
                         </tr>
                         </tbody>
                     </table>
@@ -161,7 +160,8 @@
         </a>
     </div>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -173,7 +173,7 @@
                 <div class="modal-body">Potvrdťe odhlášení kliknutím na tlačítko "Logout".</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Zrušit</button>
-                    <a class="btn btn-primary" th:href="@{/logout}" >Logout</a>
+                    <a class="btn btn-primary" th:href="@{/logout}">Logout</a>
                 </div>
             </div>
         </div>
@@ -183,24 +183,24 @@
     <script src="js/sb-admin-datatables.min.js" th:src="@{js/sb-admin-datatables.min.js}"></script>
 
     <script type="text/javascript">
-//        function showForm() {
-//            var form = document.getElementById("addTrainingForm");
-//            if (form.style.display == "none") {
-//                form.style.display = "block"
-//            } else {
-//                form.style.display = "none"
-//            }
-//        }
+        //        function showForm() {
+        //            var form = document.getElementById("addTrainingForm");
+        //            if (form.style.display == "none") {
+        //                form.style.display = "block"
+        //            } else {
+        //                form.style.display = "none"
+        //            }
+        //        }
 
-//        function show2() {
-//            var myIn = document.getElementsByName("isEditOp");
-//            var form = document.getElementById("addTrainingForm");
-//            if(myIn.value == true){
-//                form.style.display = "block"
-//            } else {
-//                form.style.display = "none"
-//            }
-//        }
+        //        function show2() {
+        //            var myIn = document.getElementsByName("isEditOp");
+        //            var form = document.getElementById("addTrainingForm");
+        //            if(myIn.value == true){
+        //                form.style.display = "block"
+        //            } else {
+        //                form.style.display = "none"
+        //            }
+        //        }
     </script>
 </div>
 </body>
