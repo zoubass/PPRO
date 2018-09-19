@@ -44,11 +44,11 @@
             </div>
             <div sec:authorize="hasRole('ROLE_ADMIN')">
                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Správa">
-                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMulti" data-parent="#exampleAccordion">
+                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMultiMana" data-parent="#exampleAccordion">
                         <i class="fa fa-fw fa-wrench"></i>
                         <span class="nav-link-text">Správa</span>
                     </a>
-                    <ul class="sidenav-second-level collapse" id="collapseMulti">
+                    <ul class="sidenav-second-level collapse" id="collapseMultiMana">
                         <li>
                             <a class="nav-link" th:href="@{/web/user}">
                                 <i class="fa fa-fw fa-dashboard"></i>
@@ -72,13 +72,25 @@
                         <span class="nav-link-text">Trénink</span>
                     </a>
                 </li>
-            
-
                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Attendance">
-                    <a class="nav-link" th:href="@{/web/attendance}">
+                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMultiAtt" data-parent="#exampleAccordion">
                         <i class="fa fa-fw fa-file"></i>
                         <span class="nav-link-text">Docházka</span>
                     </a>
+                    <ul class="sidenav-second-level collapse" id="collapseMultiAtt">
+                        <li>
+                            <a class="nav-link" th:href="@{/web/attendance}">
+                                <i class="fa fa-fw fa-eye"></i>
+                                <span class="nav-link-text">Výpis tréninků</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="nav-link" th:href="@{/web/comparingAttendance}">
+                                <i class="fa fa-fw fa-balance-scale"></i>
+                                <span class="nav-link-text">Porovnání docházky</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Training day">
                     <a class="nav-link" th:href="@{/web/trainingDay}">

@@ -31,7 +31,9 @@ public class TicketController {
 
     @RequestMapping("/ticket")
     public String showTickets(Model model) {
-        model.addAttribute("usersTicket", usrService.findUsersWithTicket());
+        List<User> usersWithTickets = usrService.findUsersWithTicket();
+        usersWithTickets = ticketService.checkValidationOfTickets(usersWithTickets);
+        model.addAttribute("usersTicket", usersWithTickets);
         model.addAttribute("findingUser", new User());
         model.addAttribute("filteredUser", new User());
         return "ticket";
@@ -74,7 +76,7 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/filterTicket", method = RequestMethod.GET)
-    public String filterTicket(Model model, @ModelAttribute("filteredUser") User user){
+    public String filterTicket(Model model, @ModelAttribute("filteredUser") User user) {
         String name = user.getFirstName();
         if (name != "")
             model.addAttribute("usersTicket", usrService.filterUsers(name));

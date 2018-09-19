@@ -28,10 +28,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	@Query("select U from User U where U.ticket = null and U.lastName = :lName and U.firstName = :fName order by U.id desc")
 	List<User> getUsersByFirstAndLastNameWithoutTicket(@Param("lName") String lName, @Param("fName") String fName);
 
-	@Query("select U from User U where U.ticket is not null and (U.lastName = :name or U.firstName = :name) order by U.id desc")
+	@Query("select U from User U where U.ticket is not null and (LOWER(U.lastName) = LOWER(:name) or LOWER(U.firstName) = LOWER(:name)) order by U.id desc")
 	List<User> getUsersByNameWithTicket(@Param("name") String name);
 
-	@Query("select U from User U where U.ticket is null and (U.lastName = :name or U.firstName = :name) order by U.id desc")
+	@Query("select U from User U where U.ticket is null and (LOWER(U.lastName) = LOWER(:name) or LOWER(U.firstName) = LOWER(:name)) order by U.id desc")
 	List<User> getUsersByNameWithoutTicket(@Param("name") String name);
 
 }

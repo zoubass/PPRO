@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head th:include="fragments::head"/>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" th:include="fragments::nav"/>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="container-fluid">
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Docházka</a>
+                </li>
+                <li class="breadcrumb-item active">Porovnání docházky</li>
+            </ol>
+            <div id="showCmprUserForm" style="display: block;" class="card mx-auto mt-5 mb-5">
+                <div class="card-header">Období</div>
+                <div class="card-body">
+                    <form  method="GET" th:action="@{/web/searchCompare}" th:object="${dateBox}" >
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col-0">
+                                    <label for="startDate">Od: </label>
+                                    <!--th:field="*{beginning}" th:field="*{ending}"-->
+                                </div>
+                                <div class="col-md-2">
+                                    <input class="form-control" id="startDate" th:field="*{startDate}" type="date"
+                                           name="startDate"
+                                           placeholder="Vlož období"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('startDate')}"
+                                          th:errors="*{startDate}"></span>
+                                </div>
+                                <div class="col-0">
+                                    <label for="endDate">Do:  </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <input class="form-control" id="endDate"  th:field="*{endDate}" type="date"
+                                           name="endDate"
+                                           placeholder="Vlož období"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('endDate')}"
+                                          th:errors="*{endDate}"></span>
+                                </div>
+                                <div class="col-mb-6">
+                                    <input type="submit" class="btn btn-primary btn-block" value="Zobrazit"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-table"></i>Docházka za určité období
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Jméno</th>
+                                <th>Příjmení</th>
+                                <th>Účast</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th>Jméno</th>
+                                <th>Příjmení</th>
+                                <th>Účast</th>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            <tr th:each="cmprAtt: ${cmprAttendanceDto}">
+                                <td th:text="${cmprAtt.user.firstName}">Jméno</td>
+                                <td th:text="${cmprAtt.user.lastName}">Příjmení</td>
+                                <td th:text="${cmprAtt.entry}">Účast</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid-->
+    <!-- /.content-wrapper-->
+    <footer class="sticky-footer">
+        <div class="container">
+            <div class="text-center">
+                <small>Copyright © Awesome 2018</small>
+            </div>
+        </div>
+    </footer>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fa fa-angle-up"></i>
+    </a>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Opravdu se chcete odhlásit?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Potvrdťe odhlášení kliknutím na tlačítko "Logout".</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Zrušit</button>
+                    <a class="btn btn-primary" th:href="@{/logout}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"
+            th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"
+            th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/chart.js/Chart.min.js" th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+    <script src="vendor/datatables/jquery.dataTables.js" th:src="@{/vendor/datatables/jquery.dataTables.js}"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"
+            th:src="@{/vendor/datatables/dataTables.bootstrap4.js}"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin.min.js" th:src="@{/js/sb-admin.min.js}"></script>
+    <!-- Custom scripts for this page-->
+
+</div>
+</body>
+
+</html>

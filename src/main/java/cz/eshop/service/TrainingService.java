@@ -22,9 +22,8 @@ public class TrainingService {
 	/**
 	 * Returns list of all trainings
 	 */
-	//TODO seřadit podle data (private Date ending) od nejnovějšího
 	public List<Training> getAllTrainings() {
-		return (List<Training>) trainingRepository.findAll();
+		return trainingRepository.findTrainingsByBeginningNotNullOrderByBeginningDesc();
 	}
 
 	public void removeTraining(Long id) {

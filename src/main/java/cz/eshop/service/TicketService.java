@@ -21,8 +21,10 @@ public class TicketService {
     private TicketRepository ticketRepo;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ReminderService reminderService;
 
-    public void removeTicketByUser(User user){
+    public void removeTicketByUser(User user) {
         User eddUser = user;
         Long ticketId = eddUser.getTicket().getId();
         eddUser.setTicket(null);
@@ -30,28 +32,45 @@ public class TicketService {
         ticketRepo.delete(ticketId);
     }
 
-    public void addTicketToUser(Long userId, String isTimeTicket, TicketTimeTypes ticketTimeTypes, TicketPointTypes ticketPointTypes){
+    public void addTicketToUser(Long userId, String isTimeTicket, TicketTimeTypes ticketTimeTypes, TicketPointTypes ticketPointTypes) {
         User user = userRepository.findById(userId);
 
-        if(isTimeTicket(isTimeTicket)){
+        if (isTimeTicket(isTimeTicket)) {
             addTimeTicket(user, ticketTimeTypes);
-        }else {
+        } else {
             addPointTicket(user, ticketPointTypes);
         }
     }
 
-    public List<User> updateCacheList(List<User> cacheList, Long userId){
+    public List<User> updateCacheList(List<User> cacheList, Long userId) {
         List<User> updatedList = new ArrayList<>();
-        for (User user:cacheList
-             ) {
-            if(user.getId() == userId)
+        for (User user : cacheList
+                ) {
+            if (user.getId() == userId)
                 continue;
             updatedList.add(user);
         }
         return updatedList;
     }
 
-    private void addTimeTicket(User user, TicketTimeTypes ticketTimeTypes){
+    public List<User> checkValidationOfTickets(List<User> usersWithTickets) {
+        List<User> usersToRemove = new ArrayList<>();
+        for (User user : usersWithTickets) {
+            Ticket usersTicket = user.getTicket();
+            if (reminderService.isTicketValid(usersTicket, false))
+                continue;
+
+            usersToRemove.add(user);
+            user.setTicket(null);
+            userRepository.save(user);
+            ticketRepo.delete(usersTicket.getId());
+        }
+        usersWithTickets.removeAll(usersToRemove);
+
+        return usersWithTickets;
+    }
+
+    private void addTimeTicket(User user, TicketTimeTypes ticketTimeTypes) {
         Ticket ticket = new Ticket();
 
         ticket.setTimeTicket(true);
@@ -67,7 +86,7 @@ public class TicketService {
         userRepository.save(user);
     }
 
-    private void addPointTicket(User user, TicketPointTypes ticketPointTypes){
+    private void addPointTicket(User user, TicketPointTypes ticketPointTypes) {
         Ticket ticket = new Ticket();
 
         ticket.setTimeTicket(false);
@@ -78,7 +97,7 @@ public class TicketService {
         userRepository.save(user);
     }
 
-    private boolean isTimeTicket(String value){
+    private boolean isTimeTicket(String value) {
         return value != null;
     }
 }

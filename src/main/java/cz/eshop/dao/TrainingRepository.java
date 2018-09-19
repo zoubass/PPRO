@@ -14,6 +14,8 @@ public interface TrainingRepository extends CrudRepository<Training, Long> {
 
     Training findById(@Param("id") Long training);
 
+    List<Training> findTrainingsByBeginningNotNullOrderByBeginningDesc();
+
     @Query("select T from Training T where T.beginning < :now and T.ending > :now")
     Training getActualTraining(@Param("now") Date now);
 	

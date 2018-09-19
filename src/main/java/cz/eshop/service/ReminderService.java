@@ -38,8 +38,8 @@ public class ReminderService {
             Ticket ticket = user.getTicket();
             Reminder reminder = user.getReminder();
 
-            if(ticket != null){
-                if (isTicketValid(ticket))
+            if (ticket != null) {
+                if (isTicketValid(ticket, true))
                     continue;
 
                 user.setTicket(null);
@@ -52,7 +52,7 @@ public class ReminderService {
         return reminders;
     }
 
-    public void payReminder(User user){
+    public void payReminder(User user) {
         User eddUser = user;
         Long reminderId = eddUser.getReminder().getId();
         eddUser.setReminder(null);
@@ -60,7 +60,7 @@ public class ReminderService {
         reminderRepository.delete(reminderId);
     }
 
-    private boolean isTicketValid(Ticket ticket) {
+    public boolean isTicketValid(Ticket ticket, boolean deductOnePoint) {
 
         if (ticket.isTimeTicket()) {
             Date now = new Date();
@@ -69,17 +69,20 @@ public class ReminderService {
             if (ticket.getEntry() <= 0)
                 return false;
 
-            ticket.setEntry(ticket.getEntry() - 1);
-            ticketRepository.save(ticket);
+            if (deductOnePoint) {
+                ticket.setEntry(ticket.getEntry() - 1);
+                ticketRepository.save(ticket);
+            }
+
             return true;
         }
     }
 
-    private User checkReminder(Reminder reminder, User user){
+    private User checkReminder(Reminder reminder, User user) {
 
-        if(reminder == null){
-            reminder = new Reminder(1 ,new Date());
-        }else {
+        if (reminder == null) {
+            reminder = new Reminder(1, new Date());
+        } else {
             reminder.setReminderCount(reminder.getReminderCount() + 1);
         }
         Reminder createdReminder = reminderRepository.save(reminder);
