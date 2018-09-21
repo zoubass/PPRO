@@ -1,82 +1,134 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.w3.org/1999/html">
 
-<head th:include="fragments::head" />
+<head th:include="fragments::head"/>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" th:include="fragments::nav" />
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" th:include="fragments::nav"/>
 <div class="content-wrapper">
-    <div class="container-fluid">
-        <div id="addUserForm"  th:attr="style='display: ' + ${style} + ';'" style="display: none;" class="card mx-auto mt-5 mb-5">
-            <div class="card-header">Vytvoření uživatele</div>
-            <div class="card-body">
-                <form th:action="@{/web/registerUser}" th:object="${userDto}" method="post">
-                    <!--Basic information-->
-                    <div class="form-group">
-                        <div class="form-row">
-                            <div class="col-md-2">
-                                <label for="firstName">Jméno</label>
-                                <input class="form-control" th:field="*{user.firstName}" id="firstName" type="text"
-                                       name="firstName"
-                                       placeholder="Jméno"/>
-                                <span class="validation" th:if="${#fields.hasErrors('user.firstName')}"
-                                      th:errors="*{user.firstName}"></span>
+    <div th:if="${actTraining == null}">
+        <div class="container-fluid">
+            <div class="card mx-auto mb-3">
+                <div class="card-header" style="font-size: 1.5rem; color: #0056b3; font-weight: bold">Právě neprobíhá
+                    žádný trénink
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/web/redirectToTraining}">
+                        <div class="mb-3">
+                            <div class="card">
+
+                                <input type="submit" class="btn btn-primary btn-lg"
+                                       style="color: #fff; background-color: #4e555b; border-color: black;"
+                                       value="Založit trénink"/>
                             </div>
-                            <div class="col-md-2">
-                                <label for="lastName">Příjmení</label>
-                                <input class="form-control" th:field="*{user.lastName}" id="lastName" type="text"
-                                       name="lastName"
-                                       placeholder="Příjmení"/>
-                                <span class="validation" th:if="${#fields.hasErrors('user.lastName')}"
-                                      th:errors="*{user.lastName}"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${actTraining != null}">
+        <div class="container-fluid">
+            <div class="card mx-auto mb-3">
+                <div class="card-header" th:text="'Právě probíhá trénink: ' + ${actTraining.title}"
+                     style="font-size: 1.5rem; color: firebrick; font-weight: bold"></div>
+                <div class="card-body">
+                    <h2 th:text="'Začátek: ' + ${#dates.format(actTraining.beginning, 'dd.MM.yyyy HH:mm')}"
+                        style="font-size: 1rem; color:black;line-height: 1.0;"></h2>
+                    <h2 th:text="'Konec: ' + ${#dates.format(actTraining.ending, 'dd.MM.yyyy HH:mm')}"
+                        style="font-size: 1rem; color:black;line-height: 1.0;"></h2>
+                    <input type="hidden" id="isModalShow" th:value="${showModal}"/>
+                    <div class=" mt-3">
+                        <div class="mb-3">
+                            <div class="card">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary btn-lg"
+                                        style="color: #fff; background-color: forestgreen; border-color: mediumseagreen;"
+                                        data-toggle="modal" data-target="#myModal">
+                                    Přidat účastníky
+                                </button>
                             </div>
-                            <div class="col-md-2">
-                                <label for="birthDate">Datum narození</label>
-                                <input class="form-control" id="birthDate" th:field="*{user.bornDate}" type="date"
-                                       name="bornDate"
-                                       placeholder="Heslo"/>
-                                <span class="validation" th:if="${#fields.hasErrors('user.bornDate')}"
-                                      th:errors="*{user.bornDate}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <div class="card">
+                                <button class="btn btn-secondary" onclick="showForm()">Zaevidovat nového člena</button>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="form-row">
-                            <div class="col-md-2">
+                </div>
+            </div>
 
-
-                                <label for="email">E-mail</label>
-                                <input class="form-control" id="email" th:field="*{user.email}" type="email"
-                                       name="email"
-                                       placeholder="E-mail"/>
-                                <span class="validation" th:if="${#fields.hasErrors('user.email')}"
-                                      th:errors="*{user.email}"></span>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="mobileNr">Telefon</label>
-                                <input class="form-control" id="mobileNr" th:field="*{user.tel}" type="tel"
-                                       name="mobileNr"
-                                       placeholder="Telefon"/>
-                                <span class="validation" th:if="${#fields.hasErrors('user.tel')}"
-                                      th:errors="*{user.tel}"></span>
-                            </div>
-
-                            <!--Domain specific information-->
-                            <div class="col-md-2">
-                                <label for="firstName">Role v tělocvičně</label>
-                                <select class="form-control" th:field="*{user.role}">
-                                    <option th:each="role : ${T(cz.eshop.model.Types.RoleTypes).values()}"
-                                            th:value="${role}"
-                                            th:text="${role}">
-                                    </option>
-                                </select>
+            <div id="addUserForm" th:attr="style='display: ' + ${styleAddUser} + ';'" style="display: none;"
+                 class="card mx-auto mt-2 mb-5">
+                <div class="card-header">Vytvoření uživatele</div>
+                <div class="card-body">
+                    <form th:action="@{/web/registerUser}" th:object="${userDto}" method="post">
+                        <!--Basic information-->
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col-md-2">
+                                    <label for="firstName">Jméno</label>
+                                    <input class="form-control" th:field="*{user.firstName}" id="firstName" type="text"
+                                           name="firstName"
+                                           placeholder="Jméno"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.firstName')}"
+                                          th:errors="*{user.firstName}"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="lastName">Příjmení</label>
+                                    <input class="form-control" th:field="*{user.lastName}" id="lastName" type="text"
+                                           name="lastName"
+                                           placeholder="Příjmení"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.lastName')}"
+                                          th:errors="*{user.lastName}"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="birthDate">Datum narození</label>
+                                    <input class="form-control" id="birthDate" th:field="*{user.bornDate}" type="date"
+                                           name="bornDate"
+                                           placeholder="Heslo"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.bornDate')}"
+                                          th:errors="*{user.bornDate}"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col-md-2">
+
+
+                                    <label for="email">E-mail</label>
+                                    <input class="form-control" id="email" th:field="*{user.email}" type="email"
+                                           name="email"
+                                           placeholder="E-mail"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.email')}"
+                                          th:errors="*{user.email}"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="mobileNr">Telefon</label>
+                                    <input class="form-control" id="mobileNr" th:field="*{user.tel}" type="tel"
+                                           name="mobileNr"
+                                           placeholder="Telefon"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.tel')}"
+                                          th:errors="*{user.tel}"></span>
+                                </div>
+
+                                <!--Domain specific information-->
+                                <div class="col-md-2">
+                                    <label for="firstName">Role v tělocvičně</label>
+                                    <select class="form-control" th:field="*{user.role}">
+                                        <option th:each="role : ${T(cz.eshop.model.Types.RoleTypes).values()}"
+                                                th:value="${role}"
+                                                th:text="${role}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="form-row">
-                            <input type="hidden" th:field="*{user.id}" />
+                            <input type="hidden" th:field="*{user.id}"/>
                             <!--Domain specific information-->
                             <div class="col-md-2">
                                 <label for="belt">Barva pásku</label>
@@ -90,172 +142,204 @@
 
                             <div class="col-md-2">
                                 <label for="stripe">Počet pruhů</label>
-                                <input id="stripe" class="form-control" type="number" th:field="*{user.stripes}" />
+                                <input id="stripe" class="form-control" type="number" th:field="*{user.stripes}"/>
                                 <span class="validation" th:if="${#fields.hasErrors('user.stripes')}"
                                       th:errors="*{user.stripe}"></span>
                             </div>
 
                         </div>
 
-                    <!--System security information-->
-                    <div class="form-group">
-                        <div class="form-row">
-                            <div class="col-md-2">
-                                <label for="username">Uživatelské jméno</label>
-                                <input class="form-control" id="username" th:field="*{user.username}" type="text"
-                                       placeholder="Uživatelské jméno"/>
-                                <span class="validation"
-                                      th:if="${isUsernameUsed}">Uživatelské jméno již existuje</span>
-                                <span class="validation" th:if="${#fields.hasErrors('user.username')}"
-                                      th:errors="*{user.username}"></span>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="password">Heslo</label>
-                                <input class="form-control" id="password" type="text"
-                                       th:field="*{user.password}" placeholder="Heslo"/>
-                                <span class="validation" th:if="${#fields.hasErrors('user.password')}"
-                                      th:errors="*{user.password}"></span>
-                            </div>
-                            <!--<div class="col-md-2">-->
+                        <!--System security information-->
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col-md-2">
+                                    <label for="username">Uživatelské jméno</label>
+                                    <input class="form-control" id="username" th:field="*{user.username}" type="text"
+                                           placeholder="Uživatelské jméno"/>
+                                    <span class="validation"
+                                          th:if="${isUsernameUsed}">Uživatelské jméno již existuje</span>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.username')}"
+                                          th:errors="*{user.username}"></span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="password">Heslo</label>
+                                    <input class="form-control" id="password" type="text"
+                                           th:field="*{user.password}" placeholder="Heslo"/>
+                                    <span class="validation" th:if="${#fields.hasErrors('user.password')}"
+                                          th:errors="*{user.password}"></span>
+                                </div>
+                                <!--<div class="col-md-2">-->
                                 <!--<label for="password">Role v systému</label>-->
                                 <!--<select class="form-control" th:field="*{authorities.authority}">-->
-                                    <!--&lt;!&ndash;<option th:each="authority : ${T(cz.eshop.model.AuthoritiesEnum).values()}"&ndash;&gt;-->
-                                            <!--&lt;!&ndash;th:value="${authority}"&ndash;&gt;-->
-                                            <!--&lt;!&ndash;th:text="${authority}">&ndash;&gt;-->
-                                        <!--<option th:value="${T(cz.eshop.model.AuthoritiesEnum).ROLE_USER}" th:text="${T(cz.eshop.model.AuthoritiesEnum).ROLE_USER}">-->
-                                    <!--</option>-->
+                                <!--&lt;!&ndash;<option th:each="authority : ${T(cz.eshop.model.AuthoritiesEnum).values()}"&ndash;&gt;-->
+                                <!--&lt;!&ndash;th:value="${authority}"&ndash;&gt;-->
+                                <!--&lt;!&ndash;th:text="${authority}">&ndash;&gt;-->
+                                <!--<option th:value="${T(cz.eshop.model.AuthoritiesEnum).ROLE_USER}" th:text="${T(cz.eshop.model.AuthoritiesEnum).ROLE_USER}">-->
+                                <!--</option>-->
                                 <!--</select>-->
                                 <!--<input type="hidden" th:field="*{authorities.authority}"/>-->
-                            <!--</div>-->
+                                <!--</div>-->
+                            </div>
                         </div>
-                    </div>
-                    <!--<div class="form-group">-->
+                        <!--<div class="form-group">-->
                         <!--<div class="form-row">-->
-                            <!--<div class="col-md-2">-->
-                                <!--<label for="enabled">Povolen</label>-->
-                                <!--<input id="enabled" type="checkbox" th:field="*{user.enabled}" value="Povolen"-->
-                                       <!--name="enabled" placeholder="Povolen"/>-->
-                            <!--</div>-->
+                        <!--<div class="col-md-2">-->
+                        <!--<label for="enabled">Povolen</label>-->
+                        <!--<input id="enabled" type="checkbox" th:field="*{user.enabled}" value="Povolen"-->
+                        <!--name="enabled" placeholder="Povolen"/>-->
                         <!--</div>-->
-                    <!--</div>-->
+                        <!--</div>-->
+                        <!--</div>-->
 
-                    <input type="submit" class="btn btn-primary btn-block" value="Uložit"/>
-                </form>
-                <div class="text-center">
-                    <p class="validation" th:if="${errorMsg != null}" th:text="${errorMsg}"></p>
-                </div>
-            </div>
-        </div>
-        
-        
-        
-        
-        
-        
-        <h1>Tréninkový den</h1>
-        <div class="row">
-            <div class="col-xl-3 col-sm-6 mb-3">
-                <div class="card text-white bg-warning o-hidden h-100">
-                    <button class="btn btn-secondary" onclick="showForm()">Zaevidovat nového člena</button>
-                </div>
-            </div>
-        </div>
-        <form th:action="@{/web/registerUsersAtt}" method="post">
-            <div class="row">
-                <div class="col-xl-3 col-sm-6 mb-3">
-                    <div class="card text-white bg-warning o-hidden h-100">
-                        <input type="submit" value="Potvrdit (placení)" class="btn btn-secondary" th:href="@{/web/addUser}"/>
+                        <input type="submit" class="btn btn-primary btn-block" value="Uložit"/>
+                    </form>
+                    <div class="text-center">
+                        <p class="validation" th:if="${errorMsg != null}" th:text="${errorMsg}"></p>
                     </div>
                 </div>
             </div>
-            <div  class="col-xl-3 col-sm-6 mb-3"><span th:if="${nobodyIsChecked}" class="validation">Před placením je potřeba zaškrtnout alespoň jednoho zúčastněného</span></div>
-            <div class="card-mb-3">
-                <div class="col-xl-3 col-sm-6 mb-3">
-                    <table>
-                        <tbody>
-                        <div th:each="user: ${users}">
-                            <div th:if="!${showUsersInDebt}">
-                                <div class="card text-white bg-primary o-hidden h-100">
-                                    <div class="card-body">
-                                        <input style="font-style: oblique;" type="checkbox" id="present" name="present"
-                                               th:text="${user.firstName} + ' ' + ${user.lastName}" th:value="${user.id}" />
+
+            <form method="post" th:action="@{/web/addUserToTraining}">
+                <!-- Modal Sign-->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="myModalLabel">Vyber účastníky</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <!--List of usersForPick-->
+                                <div class="card-mb-3">
+                                    <div>
+                                        <table>
+                                            <tbody>
+                                            <div th:each="user: ${usersForPick}">
+                                                <div class="card text-white bg-primary o-hidden h-100">
+                                                    <div class="card-body" style="padding: 0.5rem">
+                                                        <input style="font-style: oblique;" type="checkbox" id="present"
+                                                               name="present"
+                                                               th:text="${user.firstName} + ' ' + ${user.lastName}"
+                                                               th:value="${user.id}"/>
+                                                    </div>
+                                                </div>
+                                                <p></p>
+                                            </div>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <p></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" id="fcnBtn" data-dismiss="modal">Zrušit
+                                </button>
+                                <input type="submit" class="btn btn-primary" id="signUser" value="Přidat"/>
                             </div>
                         </div>
-                        </tbody>
-                    </table>
+                    </div>
                 </div>
-            </div>
-        </form>
-        <div class="card-mb-3">
-            <div class="col-xl-3 col-sm-6 mb-3">
-                <table>
-                    <tbody>
-                        <div th:each="user: ${users}">
-                                <div th:if="${showUsersInDebt}">
-                                    <div class="card text-white bg-danger o-hidden h-100">
-                                        <div class="card-body">
-                                            <label style="font-style: oblique;" type="checkbox" id="present" name="present"
-                                                   th:text="${user.firstName} + ' ' + ${user.lastName}" th:value="${user.id}" />
-                                        </div>
-                                        
-                                        
-                                        
-                                        <div th:if="${assignedTicket == null}">
-                                            <form th:if="${not #lists.isEmpty(users)}" th:action="@{/web/fillTicket}" th:object="${ticket}">
-                                                <div class="col-md-10">
-                                                    <label th:for="'isTimeTicketCheckbox' + ${user.id}">Časová permanentka</label>
-                                                    <input type="checkbox" th:id="'isTimeTicketCheckbox' + ${user.id}" name="timeTicket" th:attr="onclick='showContentByCheckBox(' + ${user.id} + ')'" th:field="*{timeTicket}" placeholder="Časová permanentka"/>
-                                                </div>
-                                                <div th:id="'timeTicketContent' + ${user.id}" style="display: none">
-                                                    <select name="timeTicketValue" class="form-control">
-                                                        <option value="7">Týden</option>
-                                                        <option value="30">Měsíc</option>
-                                                        <option value="180">6 měsíců</option>
-                                                    </select>
-                                                </div>
-                                                <div th:id="'entryTicketContent'  + ${user.id}">
-                                                    <!--<label for-->
-                                                    <select name="entryTicketValue" class="form-control">
-                                                        <option value="1">1 vstup</option>
-                                                        <option value="10">10 vstupů</option>
-                                                        <option value="30">30 vstupů</option>
-                                                    </select>
-                                                </div>
-                                                
-                                                <input type="hidden" name="userId" th:value="${user.id}"/>
-                                                <input class="btn btn-primary btn-block" style="background-color: white; color: black" type="submit" value="Potvrdit permanentku"/>
-                                            </form>
-                                        </div>
-                                    </div>
+            </form>
 
-                                    <div th:if="${assignedTicket != null}">
-                                            <span th:text="${assignedTicket.startingDate}" />
-                                            <span th:text="${assignedTicket.endingDate}" />
-                                            <span th:text="${assignedTicket.entry}" />
-                                            <span th:text="${assignedTicket.timeTicket}" />
-                                    </div>
-                                    <p></p>
+
+            <!-- Modal Reminder-->
+            <div class="modal fade" id="myModalPay" tabindex="-1" role="dialog" aria-labelledby="myModalLabelPay">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabelPay">Uživatelé s upomínkou</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <!--List of users with reminder-->
+                            <div class="card-mb-3">
+                                <div>
+                                    <table>
+                                        <tbody>
+                                        <div th:each="user: ${usersWithReminder}">
+                                            <div class="card" style="background-color: #b80000; color: white">
+                                                <div class="card-body" style="padding: 0.5rem">
+                                                    <div style="font-style: oblique" type="text" id="reminderUsers"
+                                                         name="reminderUsers"
+                                                         th:text="${user.firstName} + ' ' + ${user.lastName}"></div>
+                                                </div>
+                                            </div>
+                                            <p></p>
+                                        </div>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        </tbody>
-                    </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fa fa-table"></i> Zapsaní účastníci
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Jméno</th>
+                                <th>Příjmení</th>
+                                <th>Odstranit z tréninku</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="signedUser: ${signedUsers}">
+                                <div th:if="${signedUser.reminder == null}">
+                                    <td th:text="${signedUser.firstName}">Jméno</td>
+                                </div>
+                                <div th:if="${signedUser.reminder != null}">
+                                    <td th:text="${signedUser.firstName}" style="color: #b80000; font-weight: bold">
+                                        Jméno
+                                    </td>
+                                </div>
+                                <div th:if="${signedUser.reminder == null}">
+                                    <td th:text="${signedUser.lastName}">Příjmení</td>
+                                </div>
+                                <div th:if="${signedUser.reminder != null}">
+                                    <td th:text="${signedUser.lastName}" style="color: #b80000; font-weight: bold">
+                                        Příjmení
+                                    </td>
+                                </div>
+                                <div th:if="${signedUser.reminder == null}">
+                                    <td><a th:href="@{/web/removeFromTraining(userId = ${signedUser.id})}"
+                                           style="color: #0056b3">Odstranit</a></td>
+                                </div>
+                                <div th:if="${signedUser.reminder != null}">
+                                    <td style="color: #b80000; font-weight: bold"><a
+                                            th:href="@{/web/removeFromTraining(userId = ${signedUser.id})}"
+                                            style="color: #b80000; font-weight: bold">Odstranit</a></td>
+                                </div>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- /.container-fluid-->
     <!-- /.content-wrapper-->
     <!--Footer-->
-    <footer class="sticky-footer" id="myFooter" th:include="fragments::footer" />
+    <footer class="sticky-footer" id="myFooter" th:include="fragments::footer"/>
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fa fa-angle-up"></i>
     </a>
     <!-- Logout Modal-->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -267,11 +351,12 @@
                 <div class="modal-body">Potvrdťe odhlášení kliknutím na tlačítko "Logout".</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Zrušit</button>
-                    <a class="btn btn-primary" th:href="@{/logout}" >Logout</a>
+                    <a class="btn btn-primary" th:href="@{/logout}">Logout</a>
                 </div>
             </div>
         </div>
     </div>
+
     <script type="text/javascript">
         function showForm() {
             var form = document.getElementById("addUserForm");
@@ -281,28 +366,36 @@
                 form.style.display = "none"
             }
         }
-        
+
         function showContentByCheckBox(userId) {
             console.log(userId)
             var isTimeTicket = document.getElementById("isTimeTicketCheckbox" + userId);
             var timeTicketContent = document.getElementById("timeTicketContent" + userId);
 
             var entryTicketContent = document.getElementById("entryTicketContent" + userId);
-            
+
             console.log("I have been clicked");
-            
+
             if (isTimeTicket.checked) {
                 timeTicketContent.style.display = "block";
                 entryTicketContent.style.display = "none";
-                
+
             } else {
                 entryTicketContent.style.display = "block";
                 timeTicketContent.style.display = "none";
-                
+
             }
-            
-            
         }
+
+        function showPayModal() {
+            var isModalShow = document.getElementById("isModalShow");
+            if (isModalShow.value == "true") {
+                $('#myModalPay').modal('show');
+            }
+        }
+
+        window.onload = showPayModal();
+
     </script>
     <!-- Custom scripts for this page-->
     <!--<script src="js/sb-admin-datatables.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>-->

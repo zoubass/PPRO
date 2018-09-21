@@ -19,6 +19,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 	List<User> findUsersByTicketNotNull();
 
+	List<User> findUsersByIdNotNull();
+
 	@Query("select U from User U where U.ticket = null and U.firstName = :fName order by U.lastName desc")
 	List<User> getUsersByFirstNameWithoutTicket(@Param("fName") String fName);
 

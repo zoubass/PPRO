@@ -210,5 +210,15 @@ public class User {
 		this.id = id;
 	}
 
+	//Need to success list.removeAll method
+    @Override
+    public boolean equals(Object anObject) {
+        if (!(anObject instanceof User)) {
+            return false;
+        }
+        User otherMember = (User)anObject;
+        return otherMember.getId() == getId();
+    }
+
 	//endregion
 }

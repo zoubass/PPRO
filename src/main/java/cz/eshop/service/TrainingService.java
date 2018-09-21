@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -101,6 +102,10 @@ public class TrainingService {
 		return beginning.get(Calendar.DAY_OF_MONTH) == ending.get(Calendar.DAY_OF_MONTH)
 				&& beginning.get(Calendar.YEAR) == ending.get(Calendar.YEAR) && beginning.get(Calendar.MONTH) == ending
 				.get(Calendar.MONTH);
+	}
+
+	public Training getActualTraining(){
+		return trainingRepository.getActualTraining(new Date());
 	}
 
 }

@@ -16,10 +16,11 @@ public interface TrainingRepository extends CrudRepository<Training, Long> {
 
     List<Training> findTrainingsByBeginningNotNullOrderByBeginningDesc();
 
-    @Query("select T from Training T where T.beginning < :now and T.ending > :now")
+    @Query("select T from Training T where T.beginning <= :now and T.ending >= :now")
     Training getActualTraining(@Param("now") Date now);
 	
     //TODO pouze jeden výskyt
     @Query("select T from Training T where T.ending < :now order by T.ending desc")
     List<Training> getLastTraining(@Param("now") Date now);
+
 }

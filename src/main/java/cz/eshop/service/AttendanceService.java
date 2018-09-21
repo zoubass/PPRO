@@ -1,14 +1,9 @@
 package cz.eshop.service;
 
-import cz.eshop.dao.AttendanceRepository;
-import cz.eshop.dao.TrainingRepository;
-import cz.eshop.dao.UserRepository;
+import cz.eshop.dao.*;
 import cz.eshop.dto.CmprAttendanceDto;
-import cz.eshop.model.Attendance;
-import cz.eshop.model.AttendanceData;
+import cz.eshop.model.*;
 import cz.eshop.model.AuxObject.DateBox;
-import cz.eshop.model.Training;
-import cz.eshop.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
@@ -24,11 +19,21 @@ public class AttendanceService {
     private TrainingRepository trainRepo;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private ReminderRepository reminderRepo;
+    @Autowired
+    private TicketRepository ticketRepo;
 
     public List<Attendance> getAllAttendances() {
         return (List<Attendance>) attRepo.findAll();
     }
 
+    /**
+     * Method for make data for view of Training with all users signed on trainings
+     *
+     * @param trainingList list of trainings which need to display
+     * @return training with users signed on training
+     */
     public List<AttendanceData> makeAtt(List<Training> trainingList) {
         //List<Training> trainingList = trainServ.getAllTrainings();
         List<AttendanceData> attData = new ArrayList<>();
@@ -43,8 +48,51 @@ public class AttendanceService {
         return attData;
     }
 
+    /**
+     * Method for remove Attendance.
+     * 1. check if user have ticket. If have and it's point ticket, add extra point.
+     * 2. check if user have reminder. If it's true, delete or deduct this reminder
+     * 3. if haven't got ticket and reminder add one point ticket
+     * @param userId User who need remove attendance
+     * @param trainId Training witch remove attendance
+     */
     public void removeAttendance(Long userId, Long trainId) {
+        User user = userRepo.findById(userId);
+        Reminder reminder = user.getReminder();
+        Ticket ticket = user.getTicket();
+
+        if (ticket != null) {
+            if (!ticket.isTimeTicket()) {
+                ticket.setEntry(ticket.getEntry() + 1);
+                ticketRepo.save(ticket);
+            }
+            attRepo.delete(findAttendance(userId, trainId));
+            return;
+        }
+
+        if (reminder != null) {
+            int rCount = reminder.getReminderCount();
+            if (rCount > 1) {
+                rCount -= 1;
+                reminder.setReminderCount(rCount);
+               reminderRepo.save(reminder);
+            } else {
+                user.setReminder(null);
+                userRepo.save(user);
+                reminderRepo.delete(reminder);
+            }
+            attRepo.delete(findAttendance(userId, trainId));
+            return;
+        }
+
+        ticket = new Ticket();
+        ticket.setTimeTicket(false);
+        ticket.setEntry(1);
+        ticketRepo.save(ticket);
+        user.setTicket(ticket);
+        userRepo.save(user);
         attRepo.delete(findAttendance(userId, trainId));
+
     }
 
     public void removeAttendance(User user) {
@@ -58,11 +106,19 @@ public class AttendanceService {
         return att;
     }
 
+    //TODO can be one method writeDownAttByTimeId and writeDownAttByTimeIdString
+
+    /**
+     * Write down users to selected training
+     *
+     * @param userIdList     users id number list<Long>
+     * @param actualTraining selected training
+     */
     public void writeDownAttByTime(List<Long> userIdList, Training actualTraining) {
         for (Long userId : userIdList) {
             User user = userRepo.findById(userId);
 
-            if (findAttendance(userId, actualTraining.getId()) != null)
+            if (attRepo.filterByTrainingAndUser(actualTraining, user) != null)
                 continue;
 
             Attendance att = new Attendance(user, actualTraining);
@@ -81,6 +137,12 @@ public class AttendanceService {
         return actualTraining;
     }
 
+    /**
+     * Method for counting attendance of Users on CompareAttendance page
+     *
+     * @param dateBox date for filters
+     * @return list of users + count of entry of each user
+     */
     public List<CmprAttendanceDto> getCompareAttendance(DateBox dateBox) {
         List<Attendance> findingAttendance;
         List<CmprAttendanceDto> newAttendance = new ArrayList<>();

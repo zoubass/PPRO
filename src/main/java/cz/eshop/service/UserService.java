@@ -1,18 +1,13 @@
 package cz.eshop.service;
 
-import cz.eshop.dao.AuthoritiesRepository;
-import cz.eshop.dao.ReminderRepository;
-import cz.eshop.dao.TicketRepository;
-import cz.eshop.dao.UserRepository;
+import cz.eshop.dao.*;
 import cz.eshop.dto.UserDto;
-import cz.eshop.model.Authorities;
-import cz.eshop.model.Reminder;
-import cz.eshop.model.Ticket;
-import cz.eshop.model.User;
+import cz.eshop.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +29,9 @@ public class UserService {
 
     @Autowired
     private AttendanceService attendanceService;
+
+    @Autowired
+    private AttendanceRepository attendanceRepository;
 
     public User saveUser(UserDto userDto) {
         userDto.getAuthorities().setUsername(userDto.getUser().getUsername());
@@ -160,6 +158,21 @@ public class UserService {
 
     public List<User> filterUsers(String name) {
         return userRepository.getUsersByNameWithTicket(name);
+    }
+
+    public List<User> getUsersOnCurrentTraining(Training training){
+        List<User> usersOnCurrentTraining = new ArrayList<>();
+        List<Attendance> currAttendance = attendanceRepository.filterByTraining(training);
+        for(Attendance att : currAttendance){
+            usersOnCurrentTraining.add(att.getUser());
+        }
+        return usersOnCurrentTraining;
+    }
+
+    public List<User> getUsersForPickOnTraining(List<User> signedUsers){
+        List<User> allUsers = userRepository.findUsersByIdNotNull();
+        allUsers.removeAll(signedUsers);
+        return allUsers;
     }
 
     private TimeRange createTimeRangeForTicket(User user, Integer timeTicketDuration) {

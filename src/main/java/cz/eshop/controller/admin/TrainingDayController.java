@@ -4,6 +4,7 @@ import cz.eshop.dto.UserDto;
 import cz.eshop.model.*;
 import cz.eshop.service.AttendanceService;
 import cz.eshop.service.ReminderService;
+import cz.eshop.service.TrainingService;
 import cz.eshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,9 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,107 +26,177 @@ import java.util.stream.Collectors;
 @RequestMapping("/web")
 public class TrainingDayController {
 
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private ReminderService remService;
-	@Autowired
-	private AttendanceService attService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ReminderService remService;
+    @Autowired
+    private AttendanceService attService;
+    @Autowired
+    private TrainingService trainingService;
 
-	private Map<Long, User> usersInDebtCache = new HashMap<>();
+    private Training currentTraining;
 
-	@RequestMapping("/trainingDay")
-	public String trainingDayPreview(Model model) {
-		model.addAttribute("users", userService.findAll());
-		model.addAttribute("showUsersInDebt", false);
-		model.addAttribute("userDto", new UserDto());
-		model.addAttribute("style", "none");
-		return "trainingDay";
-	}
+    @RequestMapping("/trainingDay")
+    public String trainingDayPreview(Model model) {
+        currentTraining = trainingService.getActualTraining();
 
-	@RequestMapping("/registerUsersAtt")
-	public String registerUsersAttendance(@RequestParam(value = "present", required = false) List<String> userIds,
-			Model model) {
+        if (currentTraining == null){
+            model.addAttribute("actTraining", null);
+            return "trainingDay";
+        }
 
-		if (userIds != null) {
+        List<User> signedUsers = userService.getUsersOnCurrentTraining(currentTraining);
+        List<User> usersForPick = userService.getUsersForPickOnTraining(signedUsers);
 
-			List<Long> userIdsLong = userIds.stream().map(id -> Long.valueOf(id)).collect(Collectors.toList());
-			Training actualTraining = attService.findActualTraining();
-			List<User> userList = remService.doReminder(userIdsLong, actualTraining);
-			attService.writeDownAttByTime(userIdsLong, actualTraining);
+        model.addAttribute("usersForPick", usersForPick);
+        model.addAttribute("actTraining", currentTraining);
+        model.addAttribute("signedUsers", signedUsers);
+        model.addAttribute("styleAddUser", "none");
+        model.addAttribute("showUsersInDebt", false);
+        model.addAttribute("userDto", new UserDto());
+        model.addAttribute("showModal", false);
+        return "trainingDay";
+    }
 
-			usersInDebtCache = userList.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
+    @RequestMapping(value = "/addUserToTraining", method = RequestMethod.POST)
+    public String addUserToTraining(Model model, @RequestParam(value = "present", required = false) List<String> userIds) {
+        List<User> usersWithReminder = new ArrayList<>();
+        if (currentTraining == null)
+            currentTraining = trainingService.getActualTraining();
 
-			model.addAttribute("users", usersInDebtCache.values());
-			model.addAttribute("showUsersInDebt", true);
-			model.addAttribute("userDto", new UserDto());
-			model.addAttribute("ticket", new Ticket());
-			model.addAttribute("style", "none");
-		} else {
-			model.addAttribute("users", userService.findAll());
-			model.addAttribute("userDto", new UserDto());
-			model.addAttribute("nobodyIsChecked", true);
-			model.addAttribute("style", "none");
-		}
+        if (userIds != null) {
+            //sign users to training
+            List<Long> userIdsLong = userIds.stream().map(id -> Long.valueOf(id)).collect(Collectors.toList());
+            usersWithReminder = remService.doReminder(userIdsLong, currentTraining);
+            attService.writeDownAttByTime(userIdsLong, currentTraining);
 
-		return "trainingDay";
-	}
+            //control popup window
+            if (usersWithReminder.size() > 0){
+                model.addAttribute("showModal", true);
+            }else {
+                model.addAttribute("showModal", false);
+            }
+        } else {
+            model.addAttribute("showModal", false);
+        }
 
-	@RequestMapping("/registerUser")
-	public String registerNewUser(Model model, @ModelAttribute @Valid UserDto userDto, BindingResult bindingResult) {
+        List<User> signedUsers = userService.getUsersOnCurrentTraining(currentTraining);
+        List<User> usersForPick = userService.getUsersForPickOnTraining(signedUsers);
 
-		if (userDto.getUser().getUsername() != null) {
-			Authorities authorities = new Authorities();
-			authorities.setUsername(userDto.getUser().getUsername());
-			authorities.setAuthority(AuthoritiesEnum.ROLE_USER);
-			
-			userDto.getUser().setEnabled(true);
-			userDto.setAuthorities(authorities);	
-		}
-		
-		if (bindingResult.hasErrors()) {
-			model.addAttribute("users", userService.findAll());
-			model.addAttribute("userDto", userDto);
-			model.addAttribute("style", "block");
-			return "trainingDay";
-		}
-	
-		if (userService.isNotUniqueUsername(userDto)) {
-			model.addAttribute("users", userService.findAll());
-			model.addAttribute("userDto", userDto);
-			model.addAttribute("style", "block");
-			model.addAttribute("isUsernameUsed", true);
-			return "trainingDay";
-		}
+        model.addAttribute("usersForPick", usersForPick);
+        model.addAttribute("actTraining", currentTraining);
+        model.addAttribute("signedUsers", signedUsers);
+        model.addAttribute("usersWithReminder", usersWithReminder);
+        model.addAttribute("styleAddUser", "none");
+        model.addAttribute("userDto", new UserDto());
+        return "trainingDay";
+    }
 
-		userService.saveNewlyRegisteredUser(userDto);
-		model.addAttribute("style", "none");
-		model.addAttribute("users", userService.findAll());
-		model.addAttribute("userDto", new UserDto());
+    @RequestMapping("/registerUser")
+    public String registerNewUser(Model model, @ModelAttribute @Valid UserDto userDto, BindingResult bindingResult) {
+        List<User> signedUsers;
+        List<User> usersForPick;
 
-		return "trainingDay";
-	}
+        if (userDto.getUser().getUsername() != null) {
+            Authorities authorities = new Authorities();
+            authorities.setUsername(userDto.getUser().getUsername());
+            authorities.setAuthority(AuthoritiesEnum.ROLE_USER);
 
-	@RequestMapping("/fillTicket")
-	public String fillTicketForUser(Model model, @ModelAttribute Ticket ticket, @RequestParam("userId") Long id,
-			@RequestParam(value = "timeTicketValue", required = false) Integer timeTicketValue,
-			@RequestParam(value = "entryTicketValue", required = false) Integer entryTicketValue) {
+            userDto.getUser().setEnabled(true);
+            userDto.setAuthorities(authorities);
+        }
 
-		Ticket assignedTicket = userService.assignTicketToUser(id, ticket, timeTicketValue, entryTicketValue);
+        if (bindingResult.hasErrors()) {
+            signedUsers = userService.getUsersOnCurrentTraining(currentTraining);
+            usersForPick = userService.getUsersForPickOnTraining(signedUsers);
+            model.addAttribute("usersForPick", usersForPick);
+            model.addAttribute("actTraining", currentTraining);
+            model.addAttribute("signedUsers", signedUsers);
+            model.addAttribute("userDto", userDto);
+            model.addAttribute("styleAddUser", "block");
+            model.addAttribute("showModal", false);
 
-		usersInDebtCache.remove(id);
+            return "trainingDay";
+        }
 
-		if (usersInDebtCache.isEmpty()) {
-			return "redirect:/web/attendance";
-		}
+        if (userService.isNotUniqueUsername(userDto)) {
+            signedUsers = userService.getUsersOnCurrentTraining(currentTraining);
+            usersForPick = userService.getUsersForPickOnTraining(signedUsers);
+            model.addAttribute("usersForPick", usersForPick);
+            model.addAttribute("actTraining", currentTraining);
+            model.addAttribute("signedUsers", signedUsers);
+            model.addAttribute("userDto", userDto);
+            model.addAttribute("styleAddUser", "block");
+            model.addAttribute("isUsernameUsed", true);
+            model.addAttribute("showModal", false);
+            return "trainingDay";
+        }
 
-		model.addAttribute("style", "none");
-		model.addAttribute("userDto", new UserDto());
-		//TODO: prepared to show the assignedTicket
-		//		model.addAttribute("assignedTicket", assignedTicket);
-		model.addAttribute("users", usersInDebtCache.values());
-		model.addAttribute("ticket", new Ticket());
-		model.addAttribute("showUsersInDebt", true);
-		return "trainingDay";
-	}
+        userService.saveNewlyRegisteredUser(userDto);
+        List<Long> userIds = new ArrayList<Long>(){{add(userDto.getUser().getId());}};
+        remService.doReminder(userIds, currentTraining);
+        attService.writeDownAttByTime(userIds, currentTraining);
+        signedUsers = userService.getUsersOnCurrentTraining(currentTraining);
+        usersForPick = userService.getUsersForPickOnTraining(signedUsers);
+        model.addAttribute("usersForPick", usersForPick);
+        model.addAttribute("actTraining", currentTraining);
+        model.addAttribute("signedUsers", signedUsers);
+        model.addAttribute("userDto", new UserDto());
+        model.addAttribute("styleAddUser", "none");
+        model.addAttribute("showModal", false);
+
+        return "trainingDay";
+    }
+
+    @RequestMapping(value = "/removeFromTraining")
+    public String removeFromTraining(Model model, @RequestParam("userId") Long userId) {
+
+        if (currentTraining == null)
+            currentTraining = trainingService.getActualTraining();
+
+        attService.removeAttendance(userId, currentTraining.getId());
+        List<User> signedUsers = userService.getUsersOnCurrentTraining(currentTraining);
+        List<User> usersForPick = userService.getUsersForPickOnTraining(signedUsers);
+
+        model.addAttribute("usersForPick", usersForPick);
+        model.addAttribute("actTraining", currentTraining);
+        model.addAttribute("signedUsers", signedUsers);
+        model.addAttribute("styleAddUser", "none");
+        model.addAttribute("userDto", new UserDto());
+        model.addAttribute("showModal", false);
+        return "trainingDay";
+    }
+
+    @RequestMapping(value = "/redirectToTraining")
+    public String redirectToTraining(){
+        return "redirect:/web/training";
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
